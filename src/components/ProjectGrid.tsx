@@ -1,32 +1,14 @@
 import { motion } from "framer-motion";
 import ProjectCard from "./ProjectCard";
 import { ArrowRight } from "lucide-react";
-
-const projects = [
-    {
-        title: "Stellar Cyber: AI Investigator",
-        badge: "AI & Search",
-        isHero: true,
-    },
-    {
-        title: "PaperTrail",
-        badge: "Founder",
-    },
-    {
-        title: "Amazon Books",
-        badge: "Scale",
-    },
-    {
-        title: "Cisco CQE",
-        badge: "ML Tools",
-    },
-];
+import { projects, Project } from "@/lib/projects";
 
 interface ProjectGridProps {
     visible: boolean;
+    onProjectSelect: (project: Project) => void;
 }
 
-const ProjectGrid = ({ visible }: ProjectGridProps) => {
+const ProjectGrid = ({ visible, onProjectSelect }: ProjectGridProps) => {
     if (!visible) return null;
 
     return (
@@ -54,14 +36,16 @@ const ProjectGrid = ({ visible }: ProjectGridProps) => {
                 </motion.div>
 
                 {/* Grid - with proper spacing */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {projects.map((project, index) => (
                         <ProjectCard
-                            key={project.title}
+                            key={project.id}
                             title={project.title}
                             badge={project.badge}
-                            isHero={project.isHero}
+                            logoUrl={project.logoUrl}
+                            isHero={index === 0}
                             index={index}
+                            onClick={() => onProjectSelect(project)}
                         />
                     ))}
                 </div>

@@ -1,32 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import AuroraBackground from "@/components/AuroraBackground";
 import SearchInput from "@/components/SearchInput";
 import ProjectGrid from "@/components/ProjectGrid";
+import ProjectModal from "@/components/ProjectModal";
+import { Project } from "@/lib/projects";
 
 const Index = () => {
   const [showProjects, setShowProjects] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Aurora background */}
       <AuroraBackground />
 
-      {/* Header */}
+      {/* Beta Banner */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-blue-500/20 backdrop-blur-md text-center py-2 border-b border-blue-500/10">
+        <p className="text-xs font-medium text-blue-200">
+          Flynt.AI Beta — <a href="https://davidflynt.wixstudio.com/davidflynt" target="_blank" rel="noopener noreferrer" className="underline cursor-pointer hover:text-white">View Legacy Portfolio</a>
+        </p>
+      </div>
+
+      {/* Header - moved down slightly to accommodate banner */}
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between"
+        className="fixed top-8 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between pointer-events-none"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground pointer-events-auto">
           <span className="text-foreground font-medium">David Flynt</span>
           <span className="mx-2">/</span>
           <span>Lead Product Designer, AI</span>
         </div>
-        <div className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+        <div className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium pointer-events-auto">
           Available for Staff Roles
         </div>
       </motion.header>
@@ -62,8 +72,18 @@ const Index = () => {
         </motion.div>
 
         {/* Project grid - anchored to bottom */}
-        <ProjectGrid visible={showProjects} />
+        <ProjectGrid
+          visible={showProjects}
+          onProjectSelect={setSelectedProject}
+        />
       </div>
+
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
 
       {/* Subtle vignette */}
       <div

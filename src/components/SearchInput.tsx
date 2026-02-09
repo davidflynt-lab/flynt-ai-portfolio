@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowUp } from "lucide-react";
 import SuggestionDropdown from "./SuggestionDropdown";
@@ -11,88 +13,78 @@ const SearchInput = ({ onComplete }: SearchInputProps) => {
     const [displayText, setDisplayText] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isTyping, setIsTyping] = useState(true);
-    const hasCompletedOnce = useRef(false);
+
+    // Ref prevents the animation from re-triggering on every render
+    const hasFinished = useRef(false);
 
     const fullText = "Who is David Flynt?";
     const placeholderText = "Ask Flynt.AI about David...";
 
-    const startTypingAnimation = useCallback(() => {
+    useEffect(() => {
+        // If it already ran once, don't run it again
+        if (hasFinished.current) return;
+
         let currentIndex = 0;
-        const typingDelay = 120; // Slower typing speed
-        let suggestionsShown = false;
 
-        setDisplayText("");
-        setIsTyping(true);
-        setShowSuggestions(false);
-
-        const typeNextChar = () => {
+        const typingInterval = setInterval(() => {
             if (currentIndex < fullText.length) {
                 setDisplayText(fullText.slice(0, currentIndex + 1));
                 currentIndex++;
 
-                // Show suggestions after a few characters
-                if (currentIndex > 5 && !suggestionsShown) {
+                // Reveal suggestions mid-sentence for an "intelligent" feel
+                if (currentIndex === 6) {
                     setShowSuggestions(true);
-                    suggestionsShown = true;
                 }
-
-                setTimeout(typeNextChar, typingDelay);
             } else {
+                // Stop the interval and lock the state
+                clearInterval(typingInterval);
                 setIsTyping(false);
-                // Pause for 2 seconds to let user read suggestions
+                hasFinished.current = true;
+
+                // Trigger the grid reveal after a slight beat
                 setTimeout(() => {
-                    if (!hasCompletedOnce.current) {
-                        hasCompletedOnce.current = true;
-                        onComplete();
-                    }
-                    // After pause, restart the loop
-                    setTimeout(() => {
-                        startTypingAnimation();
-                    }, 500);
-                }, 2000);
+                    onComplete();
+                }, 800);
             }
-        };
+        }, 80); // Snappy speed for a modern feel
 
-        setTimeout(typeNextChar, 800);
+        return () => clearInterval(typingInterval);
     }, [onComplete]);
-
-    useEffect(() => {
-        startTypingAnimation();
-    }, [startTypingAnimation]);
 
     return (
         <div className="relative w-full max-w-md mx-auto">
             <motion.div
-                className="glass-strong rounded-full px-4 py-3 flex items-center gap-3"
+                className="glass-strong rounded-full px-4 py-3 flex items-center gap-3 glass-reflection"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
             >
-                {/* Plus icon */}
                 <button className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                     <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
 
-                {/* Input area */}
-                <div className="flex-1 relative">
+                {/* Fixed height container prevents the bar from "bouncing" */}
+                <div className="flex-1 relative h-5 flex items-center overflow-hidden">
                     {displayText.length === 0 && (
-                        <span className="text-muted-foreground text-sm">{placeholderText}</span>
+                        <span className="text-muted-foreground text-sm absolute inset-0">{placeholderText}</span>
                     )}
-                    <span className="text-foreground text-sm">
+                    <span className="text-foreground text-sm font-medium tracking-tight">
                         {displayText}
                         {isTyping && (
-                            <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-typing-cursor" />
+                            <motion.span
+                                animate={{ opacity: [0, 1, 0] }}
+                                transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                                className="inline-block w-0.5 h-4 bg-aurora-cyan ml-1 align-middle"
+                            />
                         )}
                     </span>
                 </div>
 
-                {/* Disabled arrow button */}
-                <div className="w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center opacity-40 cursor-not-allowed">
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-40">
                     <ArrowUp className="w-4 h-4 text-muted-foreground" />
                 </div>
             </motion.div>
 
-            {/* Suggestions dropdown */}
             <AnimatePresence>
                 {showSuggestions && <SuggestionDropdown />}
             </AnimatePresence>
