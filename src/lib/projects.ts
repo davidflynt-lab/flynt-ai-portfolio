@@ -2,11 +2,17 @@ export interface Project {
     id: string;
     title: string;
     badge: string;
+    description: string;
     logoUrl?: string;
-    heroVideo: string;
+    thumbnail?: string;
+    previewVideo: string;
+    heroMedia: string;
+    heroType: "video" | "image";
     thumbnails: string[];
     logline: string;
+    narrativeLabel: string;
     narrative: string;
+    impactLabel: string;
     impact: string;
 }
 
@@ -14,45 +20,66 @@ export const projects: Project[] = [
     {
         id: "papertrail",
         title: "PaperTrail",
-        badge: "Founder",
+        badge: "Visionary and Lead Designer",
+        description: "AI powered expense automation · 99.2% OCR accuracy",
         logoUrl: "/logos/Papertrail_logo.svg",
-        heroVideo: "/placeholder-video.mp4",
+        thumbnail: "/videos/pt.mp4",
+        previewVideo: "/videos/pt.mp4",
+        heroMedia: "/videos/pt.mp4",
+        heroType: "video",
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
-        logline: "Founding Designer. Automating the \"Admin Tax\" for landlords with 99.2% OCR accuracy.",
-        narrative: "PaperTrail reimagines expense tracking by leveraging multimodal LLMs to instantly parse receipts, categorize expenses, and detect anomalies. Instead of manual data entry, users simply capture and confirm, trusting the AI to handle the semantic understanding of complex financial documents.",
-        impact: "Reduced average user session time from 45 seconds to 4 seconds per receipt. Achieved 99.2% accuracy in data extraction across 50+ diverse receipt formats."
+        logline: "Automating the admin tax for landlords with 99.2% OCR accuracy.",
+        narrativeLabel: "The AI Narrative",
+        narrative: "I led the transition from manual data entry to agentic data validation. We used multimodal LLMs to parse complex receipts but the real design challenge was the Trust UI. I designed a side by side verification system that only interrupts the user when the AI confidence score drops below a specific threshold.",
+        impactLabel: "Technical Impact",
+        impact: "Reduced manual entry from 45s to 4s. Achieved 100% beta retention by ensuring the AI felt like a partner rather than a black box that made invisible mistakes."
     },
     {
         id: "stellar-cyber",
-        title: "Stellar Cyber: AI Investigator",
-        badge: "AI & Search",
+        title: "Stellar Cyber",
+        badge: "Lead Designer",
+        description: "Agentic threat investigation · 40% faster MTTR",
         logoUrl: "/logos/Stellar_logo.svg",
-        heroVideo: "/placeholder-video.mp4",
+        previewVideo: "",
+        heroMedia: "/images/stellar-hero.png",
+        heroType: "image",
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
-        logline: "Lead AI Designer. Reducing threat investigation time (MTTI) by 70% via agentic co-pilots.",
-        narrative: "The AI Investigator isn't just a black box; it's a transparent partner. By exposing the 'thought process' of the security agent—showing how it correlates alerts, verifies threats, and rules out false positives—we built a Trust Calibration interface that allows security analysts to verify the AI's logic without slowing down.",
-        impact: "Increased analyst trust scores by 40% and reduced mean time to response (MTTR) for high-severity incidents by 65%. Successfully deployed to over 200 enterprise SOCs."
+        logline: "Orchestrating autonomous cybersecurity investigations through agentic UI.",
+        narrativeLabel: "The AI Narrative",
+        narrative: "Security analysts suffer from alert fatigue. My goal was to visualize the AI Chain of Thought. I designed an interface that reveals why the AI is investigating a specific threat allowing analysts to calibrate their trust in the autonomous decisions of the system.",
+        impactLabel: "Technical Impact",
+        impact: "Reduced MTTR by 40% and enabled junior analysts to execute complex forensic workflows previously reserved for senior staff."
     },
     {
         id: "amazon-books",
         title: "Amazon Books",
-        badge: "Scale",
+        badge: "Lead Designer",
+        description: "Zero friction impulse buy · millions of users",
         logoUrl: "/logos/Amazon_logo.svg",
-        heroVideo: "/placeholder-video.mp4",
+        previewVideo: "",
+        heroMedia: "/images/amazon-hero.png",
+        heroType: "image",
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
-        logline: "Senior Designer. Drove 22% conversion lift via cross-platform \"Buy Next\" series widgets.",
-        narrative: "Focused on micro-interactions and frictionless tap-to-cart animations for millions of users. Proves scale and design system mastery.",
-        impact: "Successfully launched a mobile widget that increased cross-platform conversion and revenue."
+        logline: "Bridging the physical and digital retail gap for the world largest bookstore.",
+        narrativeLabel: "The Design Narrative",
+        narrative: "Designed a zero friction impulse buy mechanism that integrates into a massive established design system. We focused on micro interactions that mimic the physical act of picking up a book using a tap to cart animation.",
+        impactLabel: "Outcome",
+        impact: "Launched a mobile widget for millions of users where a 1% change in placement drove significant revenue growth."
     },
     {
         id: "cisco-ml-tools",
-        title: "Cisco: ML Tools",
-        badge: "ML Tools",
+        title: "Cisco",
+        badge: "Lead Designer",
+        description: "ML driven observability · months to days",
         logoUrl: "/logos/Cisco_logo.svg",
-        heroVideo: "/placeholder-video.mp4",
+        previewVideo: "",
+        heroMedia: "/images/cisco-hero.png",
+        heroType: "image",
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
-        logline: "Product Designer. Slashed hardware certification cycles from months to days via ML-powered observability.",
-        narrative: "Converting raw JSON logs into human-readable timelines. Focused on 'Exception UI'—designing for when automation fails.",
-        impact: "Standardized test automation workflows, significantly reducing root-cause identification time."
+        logline: "Modernizing legacy network infrastructure with ML driven observability and automation.",
+        narrativeLabel: "The Design Narrative",
+        narrative: "Network engineers spend most of their time debugging logs. I designed SmartDebug to highlight anomalies and convert raw JSON logs into a human readable timeline. We focused on Exception UI to handle system failures gracefully.",
+        impactLabel: "Outcome",
+        impact: "Standardized test automation workflows across global engineering teams and drastically reduced root cause identification time."
     }
 ];

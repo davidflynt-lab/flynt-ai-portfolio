@@ -15,7 +15,7 @@ const suggestions = [
     {
         icon: Rocket,
         prefix: "David Flynt",
-        highlight: "Founder of PaperTrail",
+        highlight: "Visionary Designer for PaperTrail",
     },
 ];
 

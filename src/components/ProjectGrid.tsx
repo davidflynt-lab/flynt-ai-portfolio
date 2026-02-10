@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import ProjectCard from "./ProjectCard";
-import { ArrowRight } from "lucide-react";
 import { projects, Project } from "@/lib/projects";
 
 interface ProjectGridProps {
@@ -29,10 +28,6 @@ const ProjectGrid = ({ visible, onProjectSelect }: ProjectGridProps) => {
                     <div className="px-4 py-1.5 rounded-full bg-muted text-sm font-medium text-foreground">
                         Projects
                     </div>
-                    <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
-                        Browse all
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
                 </motion.div>
 
                 {/* Grid - with proper spacing */}
@@ -42,7 +37,11 @@ const ProjectGrid = ({ visible, onProjectSelect }: ProjectGridProps) => {
                             key={project.id}
                             title={project.title}
                             badge={project.badge}
+                            description={project.description}
                             logoUrl={project.logoUrl}
+                            thumbnail={project.thumbnail}
+                            heroImage={project.heroType === "image" ? project.heroMedia : undefined}
+                            previewVideo={project.previewVideo}
                             isHero={index === 0}
                             index={index}
                             onClick={() => onProjectSelect(project)}
