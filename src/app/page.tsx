@@ -14,13 +14,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Star field background — behind everything */}
+      <div className="star-field" />
+
       {/* Aurora background */}
       <AuroraBackground />
 
       {/* Beta Banner */}
       <div className="fixed top-0 left-0 right-0 z-[60] bg-blue-500/20 backdrop-blur-md text-center py-2 border-b border-blue-500/10">
         <p className="text-xs font-medium text-blue-200">
-          Flynt.AI Beta — <a href="https://davidflynt.wixstudio.com/davidflynt" target="_blank" rel="noopener noreferrer" className="underline cursor-pointer hover:text-white">View Legacy Portfolio</a>
+          Flynt.AI Beta — <a href="https://davidflynt.wixstudio.com/davidflynt" target="_blank" rel="noopener noreferrer" className="underline cursor-pointer hover:text-off-white">View Legacy Portfolio</a>
         </p>
       </div>
 
@@ -55,14 +58,17 @@ const Index = () => {
           {/* Heading */}
           <motion.div
             className="text-center mb-8"
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-              Searching for an AI-native Lead Designer?
+            <h1
+              className="text-3xl md:text-5xl lg:text-6xl font-normal text-off-white mb-4 leading-[1.15] tracking-tight"
+              style={{ fontFamily: 'var(--font-instrument-serif), Georgia, serif' }}
+            >
+              Designing the Interface<br />of Intelligence
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
               Watch the AI run a background check, or skip straight to the evidence below.
             </p>
           </motion.div>
