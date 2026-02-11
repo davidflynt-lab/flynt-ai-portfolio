@@ -20,7 +20,7 @@ const MAX_LOOPS = 3;
 
 const ProjectCard = ({
     title,
-    badge,
+    badge: _badge,
     description,
     logoUrl,
     thumbnail,
@@ -176,15 +176,15 @@ const ProjectCard = ({
                         className="h-7 w-auto"
                         style={{
                             filter:
-                                "brightness(0) invert(0.9) sepia(0.2)",
+                                "brightness(0) saturate(100%) invert(94%) sepia(7%) saturate(1062%) hue-rotate(313deg) brightness(101%) contrast(92%)",
                         }}
                     />
                 )}
 
                 {/* Description — "technical metadata" look */}
                 <p
-                    className="text-[10px] uppercase tracking-widest leading-relaxed"
-                    style={{ color: "rgba(243, 236, 220, 0.55)" }}
+                    className="text-[10px] uppercase tracking-widest leading-relaxed font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+                    style={{ color: "rgba(243, 236, 220, 0.85)" }}
                 >
                     {description}
                 </p>

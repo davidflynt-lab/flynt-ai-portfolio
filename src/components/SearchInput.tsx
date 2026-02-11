@@ -70,7 +70,7 @@ const SearchInput = ({ onComplete }: SearchInputProps) => {
                     )}
                     <span
                         className="text-sm font-medium tracking-tight transition-colors duration-700"
-                        style={{ color: isTyping ? "#F3ECDC" : "rgba(243, 236, 220, 0.4)" }}
+                        style={{ color: isTyping ? "#F3ECDC" : "rgba(138, 130, 117, 0.4)" }}
                     >
                         {displayText}
                         {isTyping && (

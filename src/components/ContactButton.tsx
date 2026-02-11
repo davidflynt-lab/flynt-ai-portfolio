@@ -47,7 +47,7 @@ const ContactButton = () => {
             onMouseLeave={() => {
                 if (!isCopied) setIsHovered(false);
             }}
-            className="flex items-center gap-2 rounded-full cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-2 rounded-full cursor-pointer whitespace-nowrap overflow-hidden w-auto"
             style={{
                 border: "1px solid rgba(243, 236, 220, 0.25)",
                 backgroundColor: "rgba(243, 236, 220, 0.06)",
@@ -58,7 +58,7 @@ const ContactButton = () => {
                 layout: { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
             }}
         >
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="popLayout" initial={false}>
                 {isCopied ? (
                     <motion.div
                         key="copied"

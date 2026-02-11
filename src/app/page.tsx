@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import AuroraBackground from "@/components/AuroraBackground";
 import SearchInput from "@/components/SearchInput";
 import ProjectGrid from "@/components/ProjectGrid";
@@ -21,23 +21,18 @@ const Index = () => {
       {/* Aurora background */}
       <AuroraBackground />
 
-      {/* Beta Banner */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-blue-500/20 backdrop-blur-md text-center py-2 border-b border-blue-500/10">
-        <p className="text-xs font-medium text-blue-200">
-          Flynt.AI Beta — <a href="https://davidflynt.wixstudio.com/davidflynt" target="_blank" rel="noopener noreferrer" className="underline cursor-pointer hover:text-off-white">View Legacy Portfolio</a>
-        </p>
-      </div>
+
 
       {/* Header - moved down slightly to accommodate banner */}
       <motion.header
-        className="fixed top-8 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between pointer-events-none"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
         <div className="flex items-center gap-0 pointer-events-auto">
           <span className="text-foreground font-medium text-sm">David Flynt</span>
-          <span className="mx-3 text-sm" style={{ color: "rgba(243, 236, 220, 0.2)" }}>|</span>
+          <span className="mx-3 text-sm text-[#F3ECDC]/20">|</span>
           <ContactButton />
         </div>
         <div className="text-xs font-medium text-[#F3ECDC] pointer-events-auto">
