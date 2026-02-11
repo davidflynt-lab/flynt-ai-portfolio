@@ -176,6 +176,18 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
                                             className="absolute inset-0 w-full h-full object-cover"
                                         />
                                     )}
+
+                                    {/* Caption Overlay */}
+                                    {project.caption && (
+                                        <div className="absolute bottom-4 left-6 z-20 pointer-events-none mix-blend-plus-lighter">
+                                            <p
+                                                className="text-[10px] uppercase tracking-widest font-medium"
+                                                style={{ color: "rgba(243, 236, 220, 0.5)" }}
+                                            >
+                                                {project.caption}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Thumbnail Switcher */}

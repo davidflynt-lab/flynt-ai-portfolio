@@ -5,17 +5,17 @@ const suggestions = [
     {
         icon: User,
         prefix: "David Flynt",
-        highlight: "Lead Product Designer (Staff Level)",
+        highlight: "Designs AI reducing MTTR by 40%",
     },
     {
         icon: Code,
         prefix: "David Flynt",
-        highlight: "AI Prototyper (React/Vibe Code)",
+        highlight: "Builds trust for non-deterministic AI",
     },
     {
         icon: Rocket,
         prefix: "David Flynt",
-        highlight: "Visionary Designer for PaperTrail",
+        highlight: "Expert in explainable AI interfaces",
     },
 ];
 

@@ -14,6 +14,7 @@ export interface Project {
     narrative: string;
     impactLabel: string;
     impact: string;
+    caption: string;
 }
 
 export const projects: Project[] = [
@@ -30,9 +31,10 @@ export const projects: Project[] = [
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
         logline: "Automating the admin tax for landlords with 99.2% OCR accuracy.",
         narrativeLabel: "The AI Narrative",
-        narrative: "I led the transition from manual data entry to agentic data validation. We used multimodal LLMs to parse complex receipts but the real design challenge was the Trust UI. I designed a side by side verification system that only interrupts the user when the AI confidence score drops below a specific threshold.",
+        narrative: "I structured the Trust Architecture for agentic data validation. By implementing confidence threshold interruption, we created a side by side verification workflow that only engages the user when the model is uncertain, turning a black box process into a glass box experience.",
         impactLabel: "Technical Impact",
-        impact: "Reduced manual entry from 45s to 4s. Achieved 100% beta retention by ensuring the AI felt like a partner rather than a black box that made invisible mistakes."
+        impact: "Reduced manual entry from 45s to 4s. Achieved 100% beta retention by ensuring the AI felt like a partner rather than a black box that made invisible mistakes.",
+        caption: "SIDE BY SIDE VERIFICATION UI FOR LOW CONFIDENCE DATA PARSING"
     },
     {
         id: "stellar-cyber",
@@ -46,9 +48,10 @@ export const projects: Project[] = [
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
         logline: "Orchestrating autonomous cybersecurity investigations through agentic UI.",
         narrativeLabel: "The AI Narrative",
-        narrative: "Security analysts suffer from alert fatigue. My goal was to visualize the AI Chain of Thought. I designed an interface that reveals why the AI is investigating a specific threat allowing analysts to calibrate their trust in the autonomous decisions of the system.",
+        narrative: "Focused on Agentic AI for Autonomous Threat Investigation. The interface visualizes the Chain of Thought reasoning during active triage, allowing analysts to audit the system logic trace without slowing down the remediation loop.",
         impactLabel: "Technical Impact",
-        impact: "Reduced MTTR by 40% and enabled junior analysts to execute complex forensic workflows previously reserved for senior staff."
+        impact: "Reduced MTTR by 40% and enabled junior analysts to execute complex forensic workflows previously reserved for senior staff.",
+        caption: "VISUALIZING THE AI REASONING CHAIN DURING ACTIVE THREAT TRIAGE"
     },
     {
         id: "amazon-books",
@@ -62,9 +65,10 @@ export const projects: Project[] = [
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
         logline: "Bridging the physical and digital retail gap for the world largest bookstore.",
         narrativeLabel: "The Design Narrative",
-        narrative: "Designed a zero friction impulse buy mechanism that integrates into a massive established design system. We focused on micro interactions that mimic the physical act of picking up a book using a tap to cart animation.",
+        narrative: "Designed a zero friction impulse buy mechanism for millions of users. The challenge was integrating robust commerce flows into a legacy codebase while maintaining the trust and stability required for high velocity transactions at consumer scale.",
         impactLabel: "Outcome",
-        impact: "Launched a mobile widget for millions of users where a 1% change in placement drove significant revenue growth."
+        impact: "Launched a mobile widget for millions of users where a 1% change in placement drove significant revenue growth.",
+        caption: "ZERO FRICTION IMPULSE BUY FLOW AT CONSUMER SCALE"
     },
     {
         id: "cisco-ml-tools",
@@ -78,8 +82,9 @@ export const projects: Project[] = [
         thumbnails: ["/placeholder-thumb-1.jpg", "/placeholder-thumb-2.jpg", "/placeholder-thumb-3.jpg"],
         logline: "Modernizing legacy network infrastructure with ML driven observability and automation.",
         narrativeLabel: "The Design Narrative",
-        narrative: "Network engineers spend most of their time debugging logs. I designed SmartDebug to highlight anomalies and convert raw JSON logs into a human readable timeline. We focused on Exception UI to handle system failures gracefully.",
+        narrative: "Modernized legacy network infrastructure through ML driven observability. I applied systems engineering principles to convert raw data into actionable insights, reducing the noise ratio for engineers debugging critical system failures.",
         impactLabel: "Outcome",
-        impact: "Standardized test automation workflows across global engineering teams and drastically reduced root cause identification time."
+        impact: "Standardized test automation workflows across global engineering teams and drastically reduced root cause identification time.",
+        caption: "ML DRIVEN OBSERVABILITY DASHBOARD FOR SYSTEM ANOMALIES"
     }
 ];

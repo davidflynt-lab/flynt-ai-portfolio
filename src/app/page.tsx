@@ -6,6 +6,7 @@ import AuroraBackground from "@/components/AuroraBackground";
 import SearchInput from "@/components/SearchInput";
 import ProjectGrid from "@/components/ProjectGrid";
 import ProjectModal from "@/components/ProjectModal";
+import ContactButton from "@/components/ContactButton";
 import { Project } from "@/lib/projects";
 
 const Index = () => {
@@ -34,13 +35,12 @@ const Index = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <div className="text-sm text-muted-foreground pointer-events-auto">
-          <span className="text-foreground font-medium">David Flynt</span>
-          <span className="mx-2">/</span>
-          <span>Lead Product Designer, AI</span>
+        <div className="flex items-center gap-3 pointer-events-auto">
+          <span className="text-foreground font-medium text-sm">David Flynt</span>
+          <ContactButton />
         </div>
-        <div className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium pointer-events-auto">
-          Available for Staff Roles
+        <div className="text-xs font-medium text-[#F3ECDC] pointer-events-auto">
+          Staff-Level Product Designer <span className="text-[#F3ECDC]/40 mx-1">|</span> AI Enterprise Systems
         </div>
       </motion.header>
 
@@ -68,8 +68,8 @@ const Index = () => {
             >
               Designing the Interface<br />of Intelligence
             </h1>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Watch the AI run a background check, or skip straight to the evidence below.
+            <p className="text-sm text-muted-foreground max-w-md mx-auto uppercase tracking-widest text-[#F3ECDC]/70">
+              AI Systems Product Designer <span className="mx-2 text-[#F3ECDC]/30">•</span> Enterprise Trust <span className="mx-2 text-[#F3ECDC]/30">•</span> Human-in-the-Loop
             </p>
           </motion.div>
 

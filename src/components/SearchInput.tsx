@@ -17,8 +17,8 @@ const SearchInput = ({ onComplete }: SearchInputProps) => {
     // Ref prevents the animation from re-triggering on every render
     const hasFinished = useRef(false);
 
-    const fullText = "Who is David Flynt?";
-    const placeholderText = "Ask Flynt.AI about David...";
+    const fullText = "Ask about David’s work...";
+    const placeholderText = "Ask about David’s work...";
 
     useEffect(() => {
         // If it already ran once, don't run it again
