@@ -35,8 +35,9 @@ const Index = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <div className="flex items-center gap-3 pointer-events-auto">
+        <div className="flex items-center gap-0 pointer-events-auto">
           <span className="text-foreground font-medium text-sm">David Flynt</span>
+          <span className="mx-3 text-sm" style={{ color: "rgba(243, 236, 220, 0.2)" }}>|</span>
           <ContactButton />
         </div>
         <div className="text-xs font-medium text-[#F3ECDC] pointer-events-auto">

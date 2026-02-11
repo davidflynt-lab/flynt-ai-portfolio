@@ -243,19 +243,17 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
                                 <div className="p-8 space-y-8">
                                     {/* Header */}
                                     <div className="space-y-4">
-                                        {/* BETA tag — universal for all projects */}
+                                        {/* Project Logo — filtered to match monochromatic aesthetic */}
                                         <div className="flex items-center gap-3">
-                                            <span
-                                                className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                                            <img
+                                                src={project.logoUrl}
+                                                alt={`${project.title} logo`}
+                                                className="h-7 w-auto object-contain"
                                                 style={{
-                                                    color: "#F3ECDC",
-                                                    border: "1px solid rgba(243, 236, 220, 0.25)",
-                                                    backgroundColor:
-                                                        "rgba(243, 236, 220, 0.06)",
+                                                    filter: "brightness(0) invert(0.9) sepia(0.2)",
+                                                    opacity: 0.85,
                                                 }}
-                                            >
-                                                Beta
-                                            </span>
+                                            />
                                         </div>
 
                                         <h2

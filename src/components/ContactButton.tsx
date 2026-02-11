@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Copy, Check } from "lucide-react";
 
@@ -15,7 +15,6 @@ const ContactButton = () => {
         try {
             await navigator.clipboard.writeText(EMAIL);
         } catch {
-            // Fallback for older browsers
             const textarea = document.createElement("textarea");
             textarea.value = EMAIL;
             textarea.style.position = "fixed";
@@ -27,43 +26,46 @@ const ContactButton = () => {
         }
 
         setIsCopied(true);
-
-        // Clear any existing timer
         if (timerRef.current) clearTimeout(timerRef.current);
-
         timerRef.current = setTimeout(() => {
             setIsCopied(false);
+            setIsHovered(false);
         }, 1500);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
     }, []);
 
     return (
         <motion.button
+            layout
             onClick={handleClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
                 if (!isCopied) setIsHovered(false);
             }}
-            className="relative flex items-center gap-2 rounded-full cursor-pointer overflow-hidden"
+            className="flex items-center gap-2 rounded-full cursor-pointer whitespace-nowrap"
             style={{
                 border: "1px solid rgba(243, 236, 220, 0.25)",
                 backgroundColor: "rgba(243, 236, 220, 0.06)",
                 padding: "6px 14px",
-            }}
-            animate={{
-                width: isCopied ? 140 : isHovered ? 260 : 120,
+                height: 32,
             }}
             transition={{
-                width: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] },
+                layout: { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
             }}
         >
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
                 {isCopied ? (
                     <motion.div
                         key="copied"
                         className="flex items-center gap-2 whitespace-nowrap"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(4px)" }}
                         transition={{ duration: 0.15 }}
                     >
                         <Check
@@ -81,9 +83,9 @@ const ContactButton = () => {
                     <motion.div
                         key="email"
                         className="flex items-center gap-2 whitespace-nowrap"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(4px)" }}
                         transition={{ duration: 0.15 }}
                     >
                         <Copy
@@ -101,9 +103,9 @@ const ContactButton = () => {
                     <motion.div
                         key="default"
                         className="flex items-center gap-2 whitespace-nowrap"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(4px)" }}
                         transition={{ duration: 0.15 }}
                     >
                         <Mail

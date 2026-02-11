@@ -26,7 +26,7 @@ const ProjectGrid = ({ visible, onProjectSelect }: ProjectGridProps) => {
                     transition={{ delay: 0.3 }}
                 >
                     <div className="px-4 py-1.5 rounded-full bg-muted text-sm font-medium text-foreground">
-                        Projects
+                        Work
                     </div>
                 </motion.div>
 

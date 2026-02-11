@@ -68,7 +68,10 @@ const SearchInput = ({ onComplete }: SearchInputProps) => {
                     {displayText.length === 0 && (
                         <span className="text-muted-foreground text-sm absolute inset-0">{placeholderText}</span>
                     )}
-                    <span className="text-foreground text-sm font-medium tracking-tight">
+                    <span
+                        className="text-sm font-medium tracking-tight transition-colors duration-700"
+                        style={{ color: isTyping ? "#F3ECDC" : "rgba(243, 236, 220, 0.4)" }}
+                    >
                         {displayText}
                         {isTyping && (
                             <motion.span
