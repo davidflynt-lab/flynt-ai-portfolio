@@ -7,11 +7,20 @@ import SearchInput from "@/components/SearchInput";
 import ProjectGrid from "@/components/ProjectGrid";
 import ProjectModal from "@/components/ProjectModal";
 import ContactButton from "@/components/ContactButton";
-import { Project } from "@/lib/projects";
+import { Project, projects } from "@/lib/projects";
 
 const Index = () => {
   const [showProjects, setShowProjects] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [initialThumbnail, setInitialThumbnail] = useState(0);
+
+  const handleSuggestionClick = (projectId: string, galleryIndex: number) => {
+    const project = projects.find((p) => p.id === projectId);
+    if (project) {
+      setInitialThumbnail(galleryIndex);
+      setSelectedProject(project);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -70,13 +79,19 @@ const Index = () => {
           </motion.div>
 
           {/* Search input */}
-          <SearchInput onComplete={() => setShowProjects(true)} />
+          <SearchInput
+            onComplete={() => setShowProjects(true)}
+            onSuggestionClick={(projectId, idx) => handleSuggestionClick(projectId, idx)}
+          />
         </motion.div>
 
         {/* Project grid - anchored to bottom */}
         <ProjectGrid
           visible={showProjects}
-          onProjectSelect={setSelectedProject}
+          onProjectSelect={(project) => {
+            setInitialThumbnail(0);
+            setSelectedProject(project);
+          }}
         />
       </div>
 
@@ -84,7 +99,11 @@ const Index = () => {
       <ProjectModal
         project={selectedProject}
         isOpen={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
+        onClose={() => {
+          setSelectedProject(null);
+          setInitialThumbnail(0);
+        }}
+        initialActiveThumbnail={initialThumbnail}
       />
 
       {/* Subtle vignette */}

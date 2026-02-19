@@ -8,6 +8,7 @@ interface ProjectCardProps {
     badge: string;
     description: string;
     logoUrl?: string;
+    projectUrl?: string; // Added prop
     thumbnail?: string;
     heroImage?: string;
     previewVideo: string;
@@ -23,6 +24,7 @@ const ProjectCard = ({
     badge: _badge,
     description,
     logoUrl,
+    projectUrl, // Destructure prop
     thumbnail,
     heroImage,
     previewVideo,
@@ -38,35 +40,16 @@ const ProjectCard = ({
     const hasVideo = !!previewVideo;
 
     // Handle video ended — loop up to MAX_LOOPS then pause on final frame
-    const handleVideoEnded = useCallback(() => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        loopCountRef.current += 1;
-        if (loopCountRef.current < MAX_LOOPS) {
-            video.currentTime = 0;
-            video.play().catch(() => { });
-        } else {
-            // Pause on the final frame (don't reset to 0)
-            video.pause();
-        }
-    }, []);
+    // Simplified: Native loop attribute is used instead per request.
 
     // Attach ended listener
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        video.addEventListener("ended", handleVideoEnded);
-        return () => video.removeEventListener("ended", handleVideoEnded);
-    }, [handleVideoEnded]);
+    // Removed as we use native loop now.
 
     const handleMouseEnter = () => {
         setIsHovered(true);
         const video = videoRef.current;
         if (video && previewVideo) {
-            loopCountRef.current = 0;
-            video.currentTime = 0;
+            // Ensure it plays if paused (though autoPlay handles most cases)
             video.play().catch(() => { });
         }
     };
@@ -112,17 +95,15 @@ const ProjectCard = ({
                     />
                 )}
 
-                {/* Static thumbnail video — for projects with video thumbnails */}
+                {/* Video Fallback Thumbnail — static image behind video */}
                 {!heroImage && thumbnail && (
-                    <video
-                        className="absolute inset-0 w-full h-full object-cover"
+                    <img
                         src={thumbnail}
-                        muted
-                        playsInline
-                        preload="auto"
+                        alt={`${title} thumbnail`}
+                        className="absolute inset-0 w-full h-full object-cover"
                         style={{
-                            opacity: isHovered ? 0 : 1,
-                            transition: "opacity 0.4s ease",
+                            // Always visible as base layer, video fades in on top
+                            zIndex: 0
                         }}
                     />
                 )}
@@ -131,8 +112,10 @@ const ProjectCard = ({
                 {previewVideo && (
                     <video
                         ref={videoRef}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover z-10"
                         src={previewVideo}
+                        autoPlay
+                        loop
                         muted
                         playsInline
                         preload="auto"
@@ -168,22 +151,34 @@ const ProjectCard = ({
                     ease: [0.25, 0.46, 0.45, 0.94],
                 }}
             >
-                {/* Logo — corrected filter for true off-white */}
+                {/* Logo — corrected for natural brand colors */}
                 {logoUrl && (
-                    <img
-                        src={logoUrl}
-                        alt={`${title} logo`}
-                        className="h-7 w-auto"
-                        style={{
-                            filter:
-                                "brightness(0) saturate(100%) invert(94%) sepia(7%) saturate(1062%) hue-rotate(313deg) brightness(101%) contrast(92%)",
-                        }}
-                    />
+                    projectUrl ? (
+                        <a
+                            href={projectUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:opacity-70 transition-opacity block z-20 relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={logoUrl}
+                                alt={`${title} logo`}
+                                className="h-7 w-auto"
+                            />
+                        </a>
+                    ) : (
+                        <img
+                            src={logoUrl}
+                            alt={`${title} logo`}
+                            className="h-7 w-auto"
+                        />
+                    )
                 )}
 
                 {/* Description — "technical metadata" look */}
                 <p
-                    className="text-[10px] uppercase tracking-widest leading-relaxed font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+                    className="text-[10px] uppercase tracking-widest leading-relaxed font-bold shadow-black/80 drop-shadow-md"
                     style={{ color: "rgba(243, 236, 220, 0.85)" }}
                 >
                     {description}

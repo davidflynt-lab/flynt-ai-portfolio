@@ -7,9 +7,10 @@ import SuggestionDropdown from "./SuggestionDropdown";
 
 interface SearchInputProps {
     onComplete: () => void;
+    onSuggestionClick: (projectId: string, galleryIndex: number) => void;
 }
 
-const SearchInput = ({ onComplete }: SearchInputProps) => {
+const SearchInput = ({ onComplete, onSuggestionClick }: SearchInputProps) => {
     const [displayText, setDisplayText] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isTyping, setIsTyping] = useState(true);
@@ -89,7 +90,7 @@ const SearchInput = ({ onComplete }: SearchInputProps) => {
             </motion.div>
 
             <AnimatePresence>
-                {showSuggestions && <SuggestionDropdown />}
+                {showSuggestions && <SuggestionDropdown onSuggestionClick={onSuggestionClick} />}
             </AnimatePresence>
         </div>
     );

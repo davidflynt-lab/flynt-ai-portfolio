@@ -39,6 +39,7 @@ const ProjectGrid = ({ visible, onProjectSelect }: ProjectGridProps) => {
                             badge={project.badge}
                             description={project.description}
                             logoUrl={project.logoUrl}
+                            projectUrl={project.projectUrl}
                             thumbnail={project.thumbnail}
                             heroImage={project.heroType === "image" ? project.heroMedia : undefined}
                             previewVideo={project.previewVideo}

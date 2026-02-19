@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, Maximize2 } from "lucide-react";
 import { Project } from "@/lib/projects";
 import { useState, useRef, useEffect, useCallback } from "react";
 
@@ -9,6 +9,7 @@ interface ProjectModalProps {
     project: Project | null;
     isOpen: boolean;
     onClose: () => void;
+    initialActiveThumbnail?: number;
 }
 
 const MAX_LOOPS = 3;
@@ -17,12 +18,14 @@ const MAX_LOOPS = 3;
 const SECTION_IDS = ["logline", "narrative", "impact"];
 
 // Inner component that holds state and logic — mounts fresh each time modal opens
-const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: () => void }) => {
-    const [activeThumbnail, setActiveThumbnail] = useState(0);
+const ProjectModalContent = ({ project, onClose, initialActiveThumbnail = 0 }: { project: Project; onClose: () => void; initialActiveThumbnail?: number }) => {
+    const [activeThumbnail, setActiveThumbnail] = useState(initialActiveThumbnail);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const lightboxVideoRef = useRef<HTMLVideoElement>(null);
     const loopCountRef = useRef(0);
     const [isPaused, setIsPaused] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     // Only needed for thumbnail logic if project changes while open
     // But since we mount fresh, we don't strictly need a reset effect here unless project prop changes.
@@ -53,7 +56,18 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
     }, [handleVideoEnded]);
 
     // Click to toggle play/pause on the entire video area
-    const handleVideoClick = () => {
+    const handleVideoClick = (e: React.MouseEvent) => {
+        // Toggle play/pause for the specific video element clicked
+        const video = e.currentTarget as HTMLVideoElement;
+        if (video.paused) {
+            video.play().catch(() => { });
+        } else {
+            video.pause();
+        }
+    };
+
+    // Wrapper for main video click to handle global pause state if needed
+    const handleMainVideoClick = () => {
         const video = videoRef.current;
         if (!video) return;
 
@@ -67,7 +81,7 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
         } else {
             video.pause();
         }
-    };
+    }
 
     // Handle thumbnail click with synced scrolling
     const handleThumbnailClick = (idx: number) => {
@@ -87,10 +101,60 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
         }
     };
 
-    const isVideo = project.heroType === "video";
+    const currentMedia = project.gallery[activeThumbnail];
+    const isVideo = currentMedia?.type === "video";
 
     return (
         <>
+            {/* Lightbox Overlay */}
+            <AnimatePresence>
+                {isLightboxOpen && (
+                    <motion.div
+                        className="fixed inset-0 z-[100] bg-black flex items-center justify-center p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <button
+                            onClick={() => setIsLightboxOpen(false)}
+                            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            {isVideo ? (
+                                <video
+                                    ref={lightboxVideoRef}
+                                    className="w-full h-full object-contain max-h-screen"
+                                    src={currentMedia.url}
+                                    poster={currentMedia.poster}
+                                    autoPlay
+                                    controls={false}
+                                    onClick={handleVideoClick}
+                                    playsInline
+                                />
+                            ) : (
+                                <img
+                                    src={currentMedia.url}
+                                    alt="Lightbox view"
+                                    className="w-full h-full object-contain max-h-screen"
+                                />
+                            )}
+                            {/* Caption in Lightbox - optional but good for consistency */}
+                            {currentMedia?.caption && (
+                                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
+                                    <p className="text-sm md:text-base font-bold text-white max-w-4xl mx-auto text-center drop-shadow-md">
+                                        {currentMedia.caption}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
             {/* Backdrop */}
             <motion.div
                 className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
@@ -113,7 +177,7 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
             >
                 {/* Modal Content */}
                 <div
-                    className="bg-card w-full max-w-6xl h-full max-h-[85vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row pointer-events-auto"
+                    className="bg-card w-full max-w-7xl h-full max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row pointer-events-auto"
                     style={{
                         border: "1px solid rgba(243, 236, 220, 0.12)",
                     }}
@@ -122,7 +186,7 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
                     {/* Close Button */}
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 z-10 p-2 rounded-full transition-colors"
+                        className="absolute top-4 right-4 z-20 p-2 rounded-full transition-colors"
                         style={{
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
                             color: "rgba(243, 236, 220, 0.7)",
@@ -144,78 +208,110 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
                     </button>
 
                     {/* Left Column: Media */}
-                    <div className="w-full md:w-2/3 bg-black relative flex flex-col">
+                    <div className="w-full md:w-2/3 bg-black relative flex flex-col justify-center bg-neutral-900 group">
+                        {/* Maximize Icon */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsLightboxOpen(true);
+                            }}
+                            className="absolute top-4 right-16 z-20 p-2 rounded-full bg-black/50 text-white/70 hover:text-white hover:bg-black/70 transition-all opacity-0 group-hover:opacity-100"
+                            title="Fullscreen"
+                        >
+                            <Maximize2 className="w-5 h-5" />
+                        </button>
+
                         {/* Main Media Area */}
                         <div
-                            className="flex-1 relative bg-neutral-900 cursor-pointer"
-                            onClick={isVideo ? handleVideoClick : undefined}
+                            className="relative w-full h-full flex items-center justify-center bg-neutral-900 cursor-pointer overflow-hidden"
+                            onClick={isVideo ? handleMainVideoClick : undefined}
                             style={{ cursor: isVideo ? "pointer" : "default" }}
                         >
-                            {isVideo ? (
-                                <video
-                                    ref={videoRef}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    src={project.heroMedia}
-                                    autoPlay
-                                    muted
-                                    playsInline
-                                    preload="auto"
-                                />
-                            ) : (
-                                <img
-                                    src={project.heroMedia}
-                                    alt={`${project.title} hero`}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
-                            )}
+                            <AnimatePresence mode="wait">
+                                {isVideo ? (
+                                    <motion.video
+                                        key={currentMedia.url}
+                                        ref={videoRef}
+                                        className="w-full h-full object-contain max-h-[60vh] md:max-h-full"
+                                        src={currentMedia.url}
+                                        poster={currentMedia.poster}
+                                        autoPlay
+                                        muted
+                                        playsInline
+                                        preload="auto"
+                                        controls={false}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    />
+                                ) : (
+                                    <motion.img
+                                        key={currentMedia.url}
+                                        src={currentMedia.url}
+                                        alt={`${project.title} media`}
+                                        className="w-full h-full object-contain max-h-[60vh] md:max-h-full"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    />
+                                )}
+                            </AnimatePresence>
 
-                            {/* Caption Overlay */}
-                            {project.caption && (
-                                <div className="absolute bottom-4 left-6 z-20 pointer-events-none mix-blend-plus-lighter">
-                                    <p
-                                        className="text-[10px] uppercase tracking-widest font-medium"
-                                        style={{ color: "rgba(243, 236, 220, 0.5)" }}
-                                    >
-                                        {project.caption}
+                            {/* Caption Overlay - High Contrast Scrim */}
+                            {currentMedia?.caption && (
+                                <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none bg-gradient-to-t from-black/95 via-black/50 to-transparent pt-16 pb-6 px-6">
+                                    <p className="text-xs md:text-[13px] uppercase tracking-widest font-bold text-white shadow-black/80 drop-shadow-lg leading-relaxed">
+                                        {currentMedia.caption}
                                     </p>
                                 </div>
                             )}
                         </div>
 
                         {/* Thumbnail Switcher */}
-                        {project.thumbnails &&
-                            project.thumbnails.length > 0 && (
+                        {project.gallery &&
+                            project.gallery.length > 0 && (
                                 <div
-                                    className="h-24 bg-neutral-950 p-4 flex gap-3 overflow-x-auto"
+                                    className="h-20 bg-neutral-950 p-3 flex gap-3 overflow-x-auto shrink-0 z-30"
                                     style={{
                                         borderTop:
                                             "1px solid rgba(243, 236, 220, 0.08)",
                                     }}
                                 >
-                                    {project.thumbnails.map(
-                                        (thumb, idx) => (
+                                    {project.gallery.map(
+                                        (item, idx) => (
                                             <button
                                                 key={idx}
-                                                onClick={() =>
-                                                    handleThumbnailClick(
-                                                        idx
-                                                    )
-                                                }
-                                                className="relative aspect-video rounded-md overflow-hidden transition-all"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleThumbnailClick(idx);
+                                                }}
+                                                className="relative aspect-video rounded hover:opacity-100 transition-all"
                                                 style={{
                                                     border:
                                                         activeThumbnail ===
                                                             idx
                                                             ? "2px solid #F3ECDC"
-                                                            : "2px solid transparent",
+                                                            : "1px solid rgba(255,255,255,0.1)",
                                                     opacity:
                                                         activeThumbnail ===
                                                             idx
                                                             ? 1
-                                                            : 0.6,
+                                                            : 0.5,
                                                 }}
                                             >
-                                                <div className="w-full h-full bg-neutral-800" />
+                                                {item.thumb ? (
+                                                    <img src={item.thumb} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
+                                                        {item.type === 'video' ? (
+                                                            <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[6px] border-l-white/50 border-b-[4px] border-b-transparent" />
+                                                        ) : (
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                                                        )}
+                                                    </div>
+                                                )}
                                             </button>
                                         )
                                     )}
@@ -235,17 +331,30 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
                         <div className="p-8 space-y-8">
                             {/* Header */}
                             <div className="space-y-4">
-                                {/* Project Logo — filtered to match monochromatic aesthetic */}
+                                {/* Project Logo — Natural Colors */}
                                 <div className="flex items-center gap-3">
-                                    <img
-                                        src={project.logoUrl}
-                                        alt={`${project.title} logo`}
-                                        className="h-7 w-auto object-contain"
-                                        style={{
-                                            filter: "brightness(0) saturate(100%) invert(94%) sepia(7%) saturate(1062%) hue-rotate(313deg) brightness(101%) contrast(92%)",
-                                            opacity: 0.85,
-                                        }}
-                                    />
+                                    {project.projectUrl ? (
+                                        <a
+                                            href={project.projectUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:opacity-70 transition-opacity block"
+                                        >
+                                            <img
+                                                src={project.logoUrl}
+                                                alt={`${project.title} logo`}
+                                                className="h-7 w-auto object-contain"
+                                                style={{ opacity: 0.9 }}
+                                            />
+                                        </a>
+                                    ) : (
+                                        <img
+                                            src={project.logoUrl}
+                                            alt={`${project.title} logo`}
+                                            className="h-7 w-auto object-contain"
+                                            style={{ opacity: 0.9 }}
+                                        />
+                                    )}
                                 </div>
 
                                 <h2
@@ -401,14 +510,14 @@ const ProjectModalContent = ({ project, onClose }: { project: Project; onClose: 
     );
 };
 
-const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
+const ProjectModal = ({ project, isOpen, onClose, initialActiveThumbnail }: ProjectModalProps) => {
     // If no project is selected but we are 'open', we should probably not render or render empty?
     // But sticking to existing logic: if !project return null
     if (!project) return null;
 
     return (
         <AnimatePresence>
-            {isOpen && <ProjectModalContent project={project} onClose={onClose} />}
+            {isOpen && <ProjectModalContent project={project} onClose={onClose} initialActiveThumbnail={initialActiveThumbnail} />}
         </AnimatePresence>
     );
 };
