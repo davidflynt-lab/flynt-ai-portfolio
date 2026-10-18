@@ -1,189 +1,120 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Project, accentStage } from "@/lib/projects";
+import { cn } from "@/lib/utils";
 
 interface ProjectCardProps {
-    title: string;
-    badge: string;
-    description: string;
-    logoUrl?: string;
-    projectUrl?: string; // Added prop
-    thumbnail?: string;
-    heroImage?: string;
-    previewVideo: string;
-    isHero?: boolean;
+    project: Project;
     index: number;
+    /** Highlighted by the Impact Lens filter bar. */
+    spotlit?: boolean;
+    /** Another card is spotlit, so this one recedes. */
+    dimmed?: boolean;
     onClick?: () => void;
 }
 
-const MAX_LOOPS = 3;
-
-const ProjectCard = ({
-    title,
-    badge: _badge,
-    description,
-    logoUrl,
-    projectUrl, // Destructure prop
-    thumbnail,
-    heroImage,
-    previewVideo,
-    isHero = false,
-    index,
-    onClick,
-}: ProjectCardProps) => {
+const ProjectCard = ({ project, index, spotlit = false, dimmed = false, onClick }: ProjectCardProps) => {
+    const { title, role, timeline, cardSummary, logoUrl, thumbnail, previewVideo, accentColor } = project;
     const videoRef = useRef<HTMLVideoElement>(null);
-    const loopCountRef = useRef(0);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Does this card have a video preview?
-    const hasVideo = !!previewVideo;
+    // Preview video plays on hover, or while the Impact Lens spotlights this card.
+    const isActive = isHovered || spotlit;
 
-    // Handle video ended — loop up to MAX_LOOPS then pause on final frame
-    // Simplified: Native loop attribute is used instead per request.
-
-    // Attach ended listener
-    // Removed as we use native loop now.
-
-    const handleMouseEnter = () => {
-        setIsHovered(true);
+    useEffect(() => {
         const video = videoRef.current;
-        if (video && previewVideo) {
-            // Ensure it plays if paused (though autoPlay handles most cases)
-            video.play().catch(() => { });
-        }
-    };
-
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-        const video = videoRef.current;
-        if (video) {
+        if (!video) return;
+        if (isActive) {
+            video.play().catch(() => {});
+        } else {
             video.pause();
             video.currentTime = 0;
         }
-    };
+    }, [isActive]);
 
     return (
         <motion.div
-            layoutId={`card-${title}`}
-            onClick={onClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className={`relative rounded-2xl overflow-hidden bg-card border border-[#F3ECDC]/8 group cursor-pointer ${isHero ? "col-span-1" : ""
-                }`}
-            style={{ aspectRatio: "4 / 5" }}
-            initial={{ opacity: 0, y: 50 }}
+            id={`project-${project.id}`}
+            className="scroll-mt-40"
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" }}
-            whileHover={{ scale: 1.02, y: -6 }}
+            transition={{ type: "spring", stiffness: 220, damping: 28, delay: 0.15 + index * 0.08 }}
         >
-            {/* ─── Background layer ─── */}
-            <div className="absolute inset-0">
-                {/* Static gradient fallback */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f0f] via-[#0a0a0a] to-[#111111]" />
-
-                {/* Static hero image background — for projects with .png images */}
-                {heroImage && (
-                    <img
-                        src={heroImage}
-                        alt={`${title} preview`}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        style={{
-                            opacity: isHovered && hasVideo ? 0 : 1,
-                            transition: "opacity 0.4s ease",
-                        }}
-                    />
+            <article
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className={cn(
+                    "group relative flex h-full flex-col rounded-[36px] bg-surface p-2.5 shadow-elevation",
+                    "transition-[opacity,scale,translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    "hover:-translate-y-1 hover:shadow-lifted",
+                    dimmed && "opacity-40 scale-[0.98]"
                 )}
-
-                {/* Video Fallback Thumbnail — static image behind video */}
-                {!heroImage && thumbnail && (
-                    <img
-                        src={thumbnail}
-                        alt={`${title} thumbnail`}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        style={{
-                            // Always visible as base layer, video fades in on top
-                            zIndex: 0
-                        }}
-                    />
-                )}
-
-                {/* Preview video — always mounted, plays on hover */}
-                {previewVideo && (
-                    <video
-                        ref={videoRef}
-                        className="absolute inset-0 w-full h-full object-cover z-10"
-                        src={previewVideo}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        style={{
-                            opacity: isHovered ? 1 : 0,
-                            transition: "opacity 0.4s ease",
-                        }}
-                    />
-                )}
-
-                {/* Gradient fade from bottom for readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-            </div>
-
-            {/* ─── Hover shimmer edge ─── */}
-            <motion.div
-                className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{
-                    boxShadow: "inset 0 0 0 1px rgba(243, 236, 220, 0.12)",
-                }}
-            />
-
-            {/* ─── Bottom 1/3: Logo + Description ─── */}
-            <motion.div
-                className="absolute bottom-0 left-0 right-0 p-5 flex flex-col items-start gap-2"
-                style={{ minHeight: "33.33%" }}
-                animate={{
-                    y: isHovered ? 20 : 0,
-                    opacity: isHovered ? 0 : 1,
-                }}
-                transition={{
-                    duration: 0.35,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                }}
+                style={spotlit ? { boxShadow: `0 40px 80px -48px ${accentColor}` } : undefined}
             >
-                {/* Logo — corrected for natural brand colors */}
-                {logoUrl && (
-                    projectUrl ? (
-                        <a
-                            href={projectUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:opacity-70 transition-opacity block z-20 relative"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <img
-                                src={logoUrl}
-                                alt={`${title} logo`}
-                                className="h-7 w-auto"
-                            />
-                        </a>
-                    ) : (
-                        <img
-                            src={logoUrl}
-                            alt={`${title} logo`}
-                            className="h-7 w-auto"
-                        />
-                    )
-                )}
-
-                {/* Description — "technical metadata" look */}
-                <p
-                    className="text-[10px] uppercase tracking-widest leading-relaxed font-bold shadow-black/80 drop-shadow-md"
-                    style={{ color: "rgba(243, 236, 220, 0.85)" }}
+                {/* ─── 16:9 accent tinted media stage (uncropped) ─── */}
+                <div
+                    className="relative aspect-video overflow-hidden rounded-[28px]"
+                    style={{ background: accentStage(accentColor) }}
                 >
-                    {description}
-                </p>
-            </motion.div>
+                    <div className="absolute inset-4 sm:inset-6">
+                        <Image
+                            src={thumbnail}
+                            alt={`${title} preview`}
+                            fill
+                            sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 92vw"
+                            preload={index < 2}
+                            className="object-contain drop-shadow-[0_16px_24px_rgb(0_0_0/0.18)]"
+                        />
+                        {previewVideo && (
+                            <video
+                                ref={videoRef}
+                                className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_16px_24px_rgb(0_0_0/0.18)] transition-opacity duration-500"
+                                src={previewVideo}
+                                poster={thumbnail}
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
+                                aria-hidden="true"
+                                style={{ opacity: isActive ? 1 : 0 }}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                {/* ─── Card body ─── */}
+                <div className="flex flex-1 flex-col gap-3 px-5 pb-5 pt-6 sm:px-6">
+                    {/* Source logos are cream; render them as ink in light mode and white in dark mode */}
+                    <Image
+                        src={logoUrl}
+                        alt=""
+                        width={120}
+                        height={32}
+                        unoptimized
+                        className="h-6 w-auto self-start brightness-0 dark:invert"
+                    />
+
+                    <h3 className="text-xl font-semibold leading-tight tracking-display text-foreground sm:text-2xl">
+                        {/* Stretched button: the whole card is the hit target */}
+                        <button
+                            type="button"
+                            onClick={onClick}
+                            className="text-left outline-none after:absolute after:inset-0 after:rounded-[36px] after:content-[''] focus-visible:after:ring-2 focus-visible:after:ring-foreground/60"
+                        >
+                            {title}
+                        </button>
+                    </h3>
+
+                    <p className="font-mono text-[12px] uppercase leading-relaxed tracking-wider text-muted-foreground">
+                        {role} · {timeline}
+                    </p>
+
+                    <p className="text-[15px] leading-relaxed text-muted-foreground">{cardSummary}</p>
+                </div>
+            </article>
         </motion.div>
     );
 };
