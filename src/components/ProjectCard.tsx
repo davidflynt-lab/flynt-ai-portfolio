@@ -54,7 +54,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                     <div className="absolute inset-0">
                         <Image
                             src={thumbnail}
-                            alt={`${title} preview`}
+                            alt={project.id === "cisco" ? "CAFY developer portal onboarding screens and visual explorations" : `${title} preview`}
                             fill
                             sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 92vw"
                             preload={index < 2}
@@ -76,6 +76,8 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                         )}
                     </div>
                 </div>
+
+                {project.id === "cisco" && <p className="px-5 pt-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:px-6">Artifact · CAFY developer portal</p>}
 
                 {/* ─── Card body ─── */}
                 <div className="flex flex-1 flex-col gap-3 px-5 pb-5 pt-6 sm:px-6">

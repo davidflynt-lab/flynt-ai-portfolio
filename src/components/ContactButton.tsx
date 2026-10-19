@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Copy, Check } from "lucide-react";
 
-const EMAIL = "davidflynt@gmail.com";
+const EMAIL = "flynt.art@gmail.com";
 
 const LABEL_FADE = {
     initial: { opacity: 0, filter: "blur(4px)" },

@@ -50,6 +50,74 @@ export const getThumb = (item: GalleryItem): string | undefined =>
 
 const projectCatalog: Project[] = [
     {
+        id: "papertrail",
+        title: "PaperTrail | AI Financial Observability Platform",
+        role: "Founding Lead Product Designer & Architect",
+        timeline: "July 2025 to Present (Georgia Tech CREATE X Accelerator)",
+        cardSummary:
+            "0 to 1 product strategy, calibrated trust mechanics, and production Next.js/TypeScript engineering for rental property owners.",
+        summary: "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
+        accentColor: "#00E599",
+        logoUrl: "/logos/Papertrail_logo.svg",
+        projectUrl: "https://papertrail.finance",
+        thumbnail: "/projects/papertrail/pt-hero-thumb.png",
+        previewVideo: "/projects/papertrail/pt-hero.mp4",
+        gallery: [
+            {
+                url: "/projects/papertrail/pt-hero.mp4",
+                type: "video",
+                poster: "/projects/papertrail/pt-hero-thumb.png",
+                caption:
+                    "End to end mobile receipt capture with optimistic UI states built in Next.js and TypeScript.",
+            },
+            {
+                url: "/projects/papertrail/pt-01.png",
+                type: "image",
+                thumb: "/projects/papertrail/pt-01-thumb.png",
+                caption:
+                    "Real time financial observability dashboard with tax readiness health indicators.",
+            },
+            {
+                url: "/projects/papertrail/pt-02.mp4",
+                type: "video",
+                thumb: "/projects/papertrail/pt-02-thumb.png",
+                caption:
+                    "Natural language expense filtering validated through usability research with 8 property operators.",
+            },
+            {
+                url: "/projects/papertrail/pt-03.mp4",
+                type: "video",
+                thumb: "/projects/papertrail/pt-03-thumb.png",
+                caption:
+                    "85% confidence threshold UI flagging uncertain fields with amber exception cues for human verification.",
+            },
+        ],
+        challenge:
+            "Property owners need accurate expense records without checking every receipt from scratch. Model errors create uncertainty around property assignment and expense categorization. We considered source highlighting, but coordinate extraction added model cost, so we kept the receipt beside editable fields and focused attention on uncertainty.",
+        architecture:
+            "Rejected full background categorization in favor of owner verification. I built a receipt and form review loop where fields below the 85% confidence design threshold receive an amber cue. Owners can compare the source and edit every value before saving. Partnering with my data scientist cofounder, I shipped the production frontend in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code.",
+        impact: [
+            {
+                metric: "85% Confidence Design Threshold",
+                detail:
+                    "Gives property owners full field level review and edit control before saving records, using an 85% OCR confidence design threshold to flag uncertain extractions for human verification.",
+                provenance: "Deterministic UI state machine rule, not an ML accuracy claim. Fields below 85% receive an amber review cue for human verification beside the receipt.",
+            },
+            {
+                metric: "Usability Research (n=8 Operators)",
+                detail:
+                    "Testing with 8 property owners led us to replace complex calendar date pickers with prescoped tax year context chips. The beta reviews one receipt at a time; batch processing remains on the roadmap.",
+                provenance: "Validated across usability testing with 8 property operators and short-term rental hosts (Georgia Tech CREATE-X '26 cohort).",
+            },
+            {
+                metric: "Georgia Tech CREATE X",
+                detail:
+                    "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
+                provenance: "Source: Georgia Tech CREATE X accelerator participation and Demo Day launch.",
+            },
+        ],
+    },
+    {
         id: "stellar-cyber",
         title: "Stellar Cyber | AI Investigation Notebook",
         role: "Product Designer, AI & Security Lead",
@@ -117,74 +185,6 @@ const projectCatalog: Project[] = [
         ],
     },
     {
-        id: "papertrail",
-        title: "PaperTrail | AI Financial Observability Platform",
-        role: "Founding Lead Product Designer & Architect",
-        timeline: "July 2025 to Present (Georgia Tech CREATE X Accelerator)",
-        cardSummary:
-            "0 to 1 product strategy, calibrated trust mechanics, and production Next.js/TypeScript engineering for rental property owners.",
-        summary: "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
-        accentColor: "#00E599",
-        logoUrl: "/logos/Papertrail_logo.svg",
-        projectUrl: "https://papertrail.finance",
-        thumbnail: "/projects/papertrail/pt-hero-thumb.png",
-        previewVideo: "/projects/papertrail/pt-hero.mp4",
-        gallery: [
-            {
-                url: "/projects/papertrail/pt-hero.mp4",
-                type: "video",
-                poster: "/projects/papertrail/pt-hero-thumb.png",
-                caption:
-                    "End to end mobile receipt capture with optimistic UI states built in Next.js and TypeScript.",
-            },
-            {
-                url: "/projects/papertrail/pt-01.png",
-                type: "image",
-                thumb: "/projects/papertrail/pt-01-thumb.png",
-                caption:
-                    "Real time financial observability dashboard with tax readiness health indicators.",
-            },
-            {
-                url: "/projects/papertrail/pt-02.mp4",
-                type: "video",
-                thumb: "/projects/papertrail/pt-02-thumb.png",
-                caption:
-                    "Natural language expense filtering validated through usability research with 8 property operators.",
-            },
-            {
-                url: "/projects/papertrail/pt-03.mp4",
-                type: "video",
-                thumb: "/projects/papertrail/pt-03-thumb.png",
-                caption:
-                    "85% confidence threshold UI flagging uncertain fields with amber exception cues for human verification.",
-            },
-        ],
-        challenge:
-            "Property owners need accurate expense records without checking every receipt from scratch. Model errors create uncertainty around property assignment and expense categorization. We considered source highlighting, but coordinate extraction added model cost, so we kept the receipt beside editable fields and focused attention on uncertainty.",
-        architecture:
-            "Rejected full background categorization in favor of owner verification. I built a receipt and form review loop where fields below the 85% confidence design threshold receive an amber cue. Owners can compare the source and edit every value before saving. Partnering with my data scientist cofounder, I shipped the production frontend in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code.",
-        impact: [
-            {
-                metric: "85% Interaction Design Threshold",
-                detail:
-                    "Gives property owners full field level review and edit control before saving records, using an 85% OCR confidence design threshold to flag uncertain extractions for human verification.",
-                provenance: "Design rule: below 85% triggers an amber review cue. This threshold is not an ML accuracy claim.",
-            },
-            {
-                metric: "Usability Research (n=8 Operators)",
-                detail:
-                    "Testing with 8 property owners led us to replace complex calendar date pickers with prescoped tax year context chips. The beta reviews one receipt at a time; batch processing remains on the roadmap.",
-                provenance: "Source: early usability testing with 8 property operators, including family and CREATE X testers.",
-            },
-            {
-                metric: "Georgia Tech CREATE X",
-                detail:
-                    "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
-                provenance: "Source: Georgia Tech CREATE X accelerator participation and Demo Day launch.",
-            },
-        ],
-    },
-    {
         id: "amazon",
         title: "Amazon Books | Series Customization & Mobile Growth",
         role: "UX Designer (Contract)",
@@ -216,8 +216,8 @@ const projectCatalog: Project[] = [
             {
                 metric: "Global Consumer Scale",
                 detail:
-                    "Passed Amazon design reviews and launched the series customization flow globally on mobile.",
-                provenance: "Source: global rollout of series customization on Amazon Mobile.",
+                    "Validated through multivariate experimentation and Amazon design review before the global mobile rollout.",
+                provenance: "Source: Amazon design reviews, multivariate experiments, and global mobile rollout. Exact conversion lift is not published.",
             },
             {
                 metric: "Data Science Experimentation",
@@ -229,11 +229,11 @@ const projectCatalog: Project[] = [
     },
     {
         id: "cisco",
-        title: "Cisco | Mass Infrastructure Observability & Smart Debug",
+        title: "Cisco | CAFY & CQE Developer Ecosystem",
         role: "Product Designer, Mass Infrastructure Group",
         timeline: "Dec 2017 to Feb 2022",
         cardSummary:
-            "Unified Single Pane of Glass orchestration and ML failure diagnostics for 500+ hardware and network engineers.",
+            "Unified developer workflows, framework onboarding, and diagnostic tools for 500+ hardware and network engineers.",
         summary: "Consolidated test workflows and surfaced diagnostic signals for 500+ engineers across five global teams.",
         accentColor: "#0055FF",
         logoUrl: "/logos/Cisco_logo.svg",
@@ -245,7 +245,7 @@ const projectCatalog: Project[] = [
                 type: "image",
                 nativeWidth: 1920,
                 caption:
-                    "FIG 01 · CAFY & CQE Unified Ecosystem Portal: Single entry point consolidating 5 fragmented test automation tools for 500+ Cisco engineers.",
+                    "FIG 01 · Internal CAFY Developer Portal: Self-serve onboarding microsite driving framework adoption across 5 global engineering orgs.",
             },
             // Pending assets (not yet in /public). Uncomment once the files are added:
             // { url: "/projects/cisco/csc-01.mp4", type: "video", caption: "Smart Debug machine learning probability scores predicting software versus hardware root causes." },
@@ -273,6 +273,6 @@ const projectCatalog: Project[] = [
     },
 ];
 
-/** Default editorial order also drives the project grid and card preloads. */
+/** Reverse chronological editorial order also drives the project grid and card preloads. */
 const projectOrder: ProjectId[] = ["papertrail", "stellar-cyber", "amazon", "cisco"];
 export const projects: Project[] = projectOrder.map((id) => projectCatalog.find((project) => project.id === id)!);

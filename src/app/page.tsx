@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
-import { AnimatePresence, MotionConfig, motion, useInView } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import StippledHero from "@/components/StippledHero";
 import ProjectGrid from "@/components/ProjectGrid";
@@ -10,6 +10,8 @@ import ProjectModal from "@/components/ProjectModal";
 import ContactButton from "@/components/ContactButton";
 import { Project, ProjectId, projects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+
+const SHOW_WAVE_BANNER = true;
 
 const PILL_SPRING = { type: "spring" as const, stiffness: 420, damping: 34, mass: 0.8 };
 const KNOB_SPRING = { type: "spring" as const, stiffness: 700, damping: 32 };
@@ -80,7 +82,6 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 
 const Index = () => {
     const heroRef = useRef<HTMLElement>(null);
-    const heroVisible = useInView(heroRef, { initial: true, margin: "-64px 0px 0px 0px" });
     const [isDark, setIsDark] = useState(false);
     const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
     const projectId = useSyncExternalStore(subscribeToProject, readProjectId, serverProjectId);
@@ -128,7 +129,6 @@ const Index = () => {
                 {/* ─── Header ─── */}
                 <motion.header
                     className="fixed inset-x-0 top-0 z-40 bg-background/70 text-foreground backdrop-blur-2xl backdrop-saturate-150"
-                    style={heroVisible ? { "--background": "#09090B", "--surface": "#202025", "--foreground": "#FAFAFA", "--muted-foreground": "#B2B4BE" } as CSSProperties : undefined}
                     initial={{ opacity: 0, y: -16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: ENTER_EASE }}
@@ -143,7 +143,7 @@ const Index = () => {
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="hidden whitespace-nowrap text-sm text-muted-foreground md:inline">
-                                Staff Interaction Designer & Design Engineer
+                                Product Designer & Design Engineer
                             </span>
                             <span className="hidden text-sm text-muted-foreground/40 md:inline" aria-hidden="true">
                                 |
@@ -154,7 +154,7 @@ const Index = () => {
                 </motion.header>
 
                 <main>
-                    <StippledHero sectionRef={heroRef} suspended={!!selectedProject} />
+                    <StippledHero sectionRef={heroRef} suspended={!!selectedProject} showBanner={SHOW_WAVE_BANNER} />
 
                     {/* ─── Impact Lens filter bar (sticks under the header while browsing) ─── */}
                     <motion.section
@@ -206,6 +206,21 @@ const Index = () => {
                         <ProjectGrid filterId={activeFilter === "all" ? null : activeFilter} onProjectSelect={openModal} />
                     </section>
                 </main>
+
+                <footer className="border-t border-zinc-200 dark:border-zinc-800">
+                    <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="max-w-md">
+                            <p className="text-sm font-medium leading-relaxed">David Flynt — Product Designer &amp; Design Engineer · San Francisco Bay Area</p>
+                            <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted-foreground">Architected in Next.js, TypeScript &amp; Tailwind CSS.</p>
+                        </div>
+                        <nav aria-label="Contact and links" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="mailto:flynt.art@gmail.com" aria-label="Email flynt.art@gmail.com">Email</a>
+                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://www.linkedin.com/in/david-flynt-2979048/" target="_blank" rel="noopener noreferrer">LinkedIn<span className="sr-only"> (opens in a new tab)</span></a>
+                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://github.com/davidflynt-lab" target="_blank" rel="noopener noreferrer">GitHub<span className="sr-only"> (opens in a new tab)</span></a>
+                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://papertrail.finance" target="_blank" rel="noopener noreferrer">Live Product: papertrail.finance ↗<span className="sr-only"> (opens in a new tab)</span></a>
+                        </nav>
+                    </div>
+                </footer>
 
                 <ProjectModal project={selectedProject} isOpen={!!selectedProject} onClose={closeModal} />
             </div>

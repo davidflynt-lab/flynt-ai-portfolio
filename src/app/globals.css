@@ -106,16 +106,14 @@
   }
 }
 
-/* A static first paint also serves browsers without WebGL. */
-.signal-hero {
-  min-height: min(54svh, 620px);
+/* Transparent wave fallback; WebGL takes over after its first successful frame. */
+.wave-fallback {
   background-image:
-    radial-gradient(ellipse at 85% 30%, rgb(0 200 5 / 0.12), transparent 55%),
-    radial-gradient(ellipse at 65% 80%, rgb(0 85 255 / 0.22), transparent 60%),
-    radial-gradient(ellipse at 50% 0%, rgb(0 229 153 / 0.15), transparent 55%),
-    radial-gradient(ellipse at 0% 90%, rgb(255 85 0 / 0.16), transparent 50%);
+    radial-gradient(ellipse at 80% 55%, rgb(0 200 5 / .16), transparent 50%),
+    radial-gradient(ellipse at 55% 65%, rgb(0 85 255 / .24), transparent 55%),
+    radial-gradient(ellipse at 35% 45%, rgb(0 229 153 / .16), transparent 55%),
+    radial-gradient(ellipse at 5% 65%, rgb(255 85 0 / .17), transparent 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 86%, 90% 90%, 75% 94%, 60% 92%, 40% 96%, 20% 91%, 0 86%);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 65%, transparent 96%);
 }
-.signal-grid {
-  background-image: linear-gradient(to right, rgb(255 255 255 / 0.025) 1px, transparent 1px);
-  background-size: 25% 100%;
-}
+[data-renderer="webgl"] > .wave-fallback { opacity: 0; }

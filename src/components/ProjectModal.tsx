@@ -206,7 +206,7 @@ const ProjectModalContent = ({
 
                         <figure className="border-y border-foreground/10">
                             <div className="relative mx-auto aspect-video w-full bg-background"
-                                style={{ maxWidth: "min(100%, calc(52dvh * 16 / 9))" }}>
+                                style={{ maxWidth: `min(100%, calc(52dvh * 16 / 9)${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
                                         initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
