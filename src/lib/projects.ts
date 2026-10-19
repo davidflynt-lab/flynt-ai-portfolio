@@ -48,7 +48,7 @@ export interface Project {
 export const getThumb = (item: GalleryItem): string | undefined =>
     item.thumb ?? item.poster ?? (item.type === "image" ? item.url : undefined);
 
-export const projects: Project[] = [
+const projectCatalog: Project[] = [
     {
         id: "stellar-cyber",
         title: "Stellar Cyber | AI Investigation Notebook",
@@ -272,3 +272,7 @@ export const projects: Project[] = [
         ],
     },
 ];
+
+/** Default editorial order also drives the project grid and card preloads. */
+const projectOrder: ProjectId[] = ["papertrail", "stellar-cyber", "amazon", "cisco"];
+export const projects: Project[] = projectOrder.map((id) => projectCatalog.find((project) => project.id === id)!);

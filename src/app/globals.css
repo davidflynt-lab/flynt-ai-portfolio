@@ -105,3 +105,17 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+/* A static first paint also serves browsers without WebGL. */
+.signal-hero {
+  min-height: min(54svh, 620px);
+  background-image:
+    radial-gradient(ellipse at 85% 30%, rgb(0 200 5 / 0.12), transparent 55%),
+    radial-gradient(ellipse at 65% 80%, rgb(0 85 255 / 0.22), transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgb(0 229 153 / 0.15), transparent 55%),
+    radial-gradient(ellipse at 0% 90%, rgb(255 85 0 / 0.16), transparent 50%);
+}
+.signal-grid {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+  background-size: 25% 100%;
+}

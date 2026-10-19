@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState, useSyncExternalStore } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { flushSync } from "react-dom";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion, useInView } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
+import StippledHero from "@/components/StippledHero";
 import ProjectGrid from "@/components/ProjectGrid";
 import ProjectModal from "@/components/ProjectModal";
 import ContactButton from "@/components/ContactButton";
@@ -24,8 +25,8 @@ interface ImpactFilter {
 /** Filters change the displayed work only after explicit selection. */
 const IMPACT_FILTERS: ImpactFilter[] = [
     { key: "all", label: `All Work (${projects.length})` },
-    { key: "stellar-cyber", label: "Enterprise Threat AI · Stellar Cyber" },
     { key: "papertrail", label: "0→1 Fintech AI · PaperTrail" },
+    { key: "stellar-cyber", label: "Enterprise Threat AI · Stellar Cyber" },
     { key: "amazon", label: "Mobile Commerce · Amazon Books" },
     { key: "cisco", label: "Developer Systems · Cisco" },
 ];
@@ -78,6 +79,8 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 );
 
 const Index = () => {
+    const heroRef = useRef<HTMLElement>(null);
+    const heroVisible = useInView(heroRef, { initial: true, margin: "-64px 0px 0px 0px" });
     const [isDark, setIsDark] = useState(false);
     const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
     const projectId = useSyncExternalStore(subscribeToProject, readProjectId, serverProjectId);
@@ -124,7 +127,8 @@ const Index = () => {
             <div className="min-h-screen bg-background text-foreground">
                 {/* ─── Header ─── */}
                 <motion.header
-                    className="fixed inset-x-0 top-0 z-40 bg-background/70 backdrop-blur-2xl backdrop-saturate-150"
+                    className="fixed inset-x-0 top-0 z-40 bg-background/70 text-foreground backdrop-blur-2xl backdrop-saturate-150"
+                    style={heroVisible ? { "--background": "#09090B", "--surface": "#202025", "--foreground": "#FAFAFA", "--muted-foreground": "#B2B4BE" } as CSSProperties : undefined}
                     initial={{ opacity: 0, y: -16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: ENTER_EASE }}
@@ -139,7 +143,7 @@ const Index = () => {
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="hidden whitespace-nowrap text-sm text-muted-foreground md:inline">
-                                Lead Product Designer & Design Engineer
+                                Staff Interaction Designer & Design Engineer
                             </span>
                             <span className="hidden text-sm text-muted-foreground/40 md:inline" aria-hidden="true">
                                 |
@@ -150,27 +154,7 @@ const Index = () => {
                 </motion.header>
 
                 <main>
-                    {/* ─── Hero ─── */}
-                    <section className="mx-auto max-w-7xl px-6 pb-12 pt-36 md:pb-16 md:pt-44">
-                        <motion.h1
-                            className="max-w-5xl text-[44px] font-semibold leading-[0.98] tracking-display sm:text-6xl md:text-7xl lg:text-[92px]"
-                            initial={{ opacity: 0, y: 24 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.9, delay: 0.1, ease: ENTER_EASE }}
-                        >
-                            Designing the Interface <br className="hidden md:block" />
-                            of Intelligence
-                        </motion.h1>
-                        <motion.p
-                            className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
-                            initial={{ opacity: 0, y: 24 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.9, delay: 0.2, ease: ENTER_EASE }}
-                        >
-                            8+ years architecting enterprise security telemetry, high volume consumer flows, and
-                            human in the loop AI systems at Cisco, Amazon, and Stellar Cyber.
-                        </motion.p>
-                    </section>
+                    <StippledHero sectionRef={heroRef} suspended={!!selectedProject} />
 
                     {/* ─── Impact Lens filter bar (sticks under the header while browsing) ─── */}
                     <motion.section
