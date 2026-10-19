@@ -37,12 +37,16 @@ vec3 signalColor(vec4 w) {
 
 const FIELD_VERTEX = `
 attribute vec2 a_position;
-varying vec2 v_uv;
+varying mediump vec2 v_uv;
 void main() { v_uv = a_position * .5 + .5; gl_Position = vec4(a_position, 0., 1.); }
 `;
 const FIELD_FRAGMENT = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
 precision mediump float;
-varying vec2 v_uv;
+#endif
+varying mediump vec2 v_uv;
 uniform float u_time;
 ${NOISE}
 void main() {
@@ -59,8 +63,8 @@ uniform float u_time;
 uniform float u_ratio;
 uniform float u_aspect;
 uniform vec3 u_pointer;
-varying vec3 v_color;
-varying float v_alpha;
+varying mediump vec3 v_color;
+varying mediump float v_alpha;
 ${NOISE}
 void main() {
     float seed = a_particle.z;
@@ -84,8 +88,8 @@ void main() {
 `;
 const POINT_FRAGMENT = `
 precision mediump float;
-varying vec3 v_color;
-varying float v_alpha;
+varying mediump vec3 v_color;
+varying mediump float v_alpha;
 void main() {
     float radius = length(gl_PointCoord - .5);
     float edge = 1. - smoothstep(.30, .5, radius);
