@@ -1,28 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { Project, accentStage } from "@/lib/projects";
-import { cn } from "@/lib/utils";
+import { motion, useReducedMotion } from "framer-motion";
+import { forwardRef, useEffect, useRef, useState } from "react";
+import { Project } from "@/lib/projects";
 
 interface ProjectCardProps {
     project: Project;
     index: number;
-    /** Highlighted by the Impact Lens filter bar. */
-    spotlit?: boolean;
-    /** Another card is spotlit, so this one recedes. */
-    dimmed?: boolean;
     onClick?: () => void;
 }
 
-const ProjectCard = ({ project, index, spotlit = false, dimmed = false, onClick }: ProjectCardProps) => {
-    const { title, role, timeline, cardSummary, logoUrl, thumbnail, previewVideo, accentColor } = project;
+const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function ProjectCard({ project, index, onClick }, ref) {
+    const { title, role, timeline, cardSummary, logoUrl, thumbnail, previewVideo } = project;
+    const reducedMotion = useReducedMotion();
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Preview video plays on hover, or while the Impact Lens spotlights this card.
-    const isActive = isHovered || spotlit;
+    // Preview video plays on hover unless the visitor prefers reduced motion.
+    const isActive = isHovered && !reducedMotion;
 
     useEffect(() => {
         const video = videoRef.current;
@@ -37,47 +33,43 @@ const ProjectCard = ({ project, index, spotlit = false, dimmed = false, onClick 
 
     return (
         <motion.div
+            ref={ref}
+            layout
             id={`project-${project.id}`}
             className="scroll-mt-40"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 220, damping: 28, delay: 0.15 + index * 0.08 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : 0.18, delay: reducedMotion ? 0 : index * 0.03 }}
         >
             <article
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className={cn(
-                    "group relative flex h-full flex-col rounded-[36px] bg-surface p-2.5 shadow-elevation",
-                    "transition-[opacity,scale,translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                    "hover:-translate-y-1 hover:shadow-lifted",
-                    dimmed && "opacity-40 scale-[0.98]"
-                )}
-                style={spotlit ? { boxShadow: `0 40px 80px -48px ${accentColor}` } : undefined}
+                className="group relative flex h-full flex-col overflow-hidden rounded-[24px] bg-surface shadow-elevation transition-[translate,box-shadow] duration-[180ms] ease-out motion-safe:hover:-translate-y-1 hover:shadow-lifted"
             >
-                {/* ─── 16:9 accent tinted media stage (uncropped) ─── */}
+                {/* Uncropped media uses the framing already present in the source asset. */}
                 <div
-                    className="relative aspect-video overflow-hidden rounded-[28px]"
-                    style={{ background: accentStage(accentColor) }}
+                    className="relative aspect-video overflow-hidden bg-background"
                 >
-                    <div className="absolute inset-4 sm:inset-6">
+                    <div className="absolute inset-0">
                         <Image
                             src={thumbnail}
                             alt={`${title} preview`}
                             fill
                             sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 92vw"
                             preload={index < 2}
-                            className="object-contain drop-shadow-[0_16px_24px_rgb(0_0_0/0.18)]"
+                            className="object-contain"
                         />
                         {previewVideo && (
                             <video
                                 ref={videoRef}
-                                className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_16px_24px_rgb(0_0_0/0.18)] transition-opacity duration-500"
+                                className="absolute inset-0 h-full w-full object-contain transition-opacity duration-[180ms] motion-reduce:transition-none"
                                 src={previewVideo}
                                 poster={thumbnail}
                                 loop
                                 muted
                                 playsInline
-                                preload="auto"
+                                preload="none"
                                 aria-hidden="true"
                                 style={{ opacity: isActive ? 1 : 0 }}
                             />
@@ -102,7 +94,7 @@ const ProjectCard = ({ project, index, spotlit = false, dimmed = false, onClick 
                         <button
                             type="button"
                             onClick={onClick}
-                            className="text-left outline-none after:absolute after:inset-0 after:rounded-[36px] after:content-[''] focus-visible:after:ring-2 focus-visible:after:ring-foreground/60"
+                            className="text-left outline-none after:absolute after:inset-0 after:rounded-[24px] after:content-[''] focus-visible:after:ring-2 focus-visible:after:ring-foreground/60"
                         >
                             {title}
                         </button>
@@ -117,6 +109,6 @@ const ProjectCard = ({ project, index, spotlit = false, dimmed = false, onClick 
             </article>
         </motion.div>
     );
-};
+});
 
 export default ProjectCard;

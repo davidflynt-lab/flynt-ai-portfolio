@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Maximize2, ExternalLink, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Project, accentStage, getThumb } from "@/lib/projects";
+import { Project, getThumb } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
 interface ProjectModalProps {
@@ -18,7 +18,6 @@ interface ProjectModalProps {
 const MAX_LOOPS = 3;
 
 const SHEET_SPRING = { type: "spring" as const, stiffness: 300, damping: 32, mass: 0.9 };
-const SNAP_SPRING = { type: "spring" as const, stiffness: 500, damping: 38 };
 
 const FOCUSABLE = 'a[href], button:not([disabled]), video, [tabindex]:not([tabindex="-1"])';
 
@@ -42,7 +41,7 @@ const trapFocus = (container: HTMLElement | null, event: KeyboardEvent) => {
 };
 
 const glassButton =
-    "flex h-10 w-10 items-center justify-center rounded-full bg-glass text-foreground backdrop-blur-2xl backdrop-saturate-150 shadow-elevation transition-[scale,background-color] duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60";
+    "flex h-11 w-11 items-center justify-center rounded-full border border-foreground/10 bg-background text-foreground transition-colors duration-150 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60";
 
 const NARRATIVE_LABEL = "font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground";
 
@@ -57,10 +56,11 @@ const ProjectModalContent = ({
     initialActiveThumbnail?: number;
 }) => {
     const { gallery, accentColor } = project;
+    const reducedMotion = useReducedMotion();
     const [activeIndex, setActiveIndex] = useState(() =>
         Math.min(Math.max(initialActiveThumbnail, 0), gallery.length - 1)
     );
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -148,264 +148,140 @@ const ProjectModalContent = ({
         maximizeButtonRef.current?.focus({ preventScroll: true });
     };
 
+    const mediaCaption = currentMedia.caption.startsWith("FIG ")
+        ? currentMedia.caption
+        : `FIG ${String(activeIndex + 1).padStart(2, "0")} · ${currentMedia.caption}`;
+
     return (
         <>
-            {/* ─── Backdrop ─── */}
             <motion.div
-                className="fixed inset-0 z-50 bg-scrim backdrop-blur-md"
+                className="fixed inset-0 z-50 bg-scrim backdrop-blur-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: reducedMotion ? 0 : 0.18 }}
                 onClick={onClose}
                 aria-hidden="true"
             />
-
-            {/* ─── Floating sheet ─── */}
             <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center">
                 <motion.div
                     ref={sheetRef}
                     role="dialog"
-                    aria-modal="true"
+                    aria-modal={!isLightboxOpen}
+                    aria-hidden={isLightboxOpen || undefined}
+                    inert={isLightboxOpen}
                     aria-labelledby="project-modal-title"
-                    className="pointer-events-auto relative w-[94vw] max-w-7xl overflow-hidden rounded-[40px] bg-background shadow-[0_48px_120px_-32px_rgb(0_0_0/0.45)] dark:bg-surface"
-                    initial={{ opacity: 0, y: 56, scale: 0.97 }}
+                    className="pointer-events-auto relative w-[94vw] max-w-7xl overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
+                    initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 40, scale: 0.98 }}
-                    transition={SHEET_SPRING}
+                    exit={{ opacity: 0, y: reducedMotion ? 0 : 24, scale: 1 }}
+                    transition={reducedMotion ? { duration: 0 } : SHEET_SPRING}
                 >
-                    <div className="no-scrollbar max-h-[92vh] overflow-y-auto overscroll-contain">
-                        {/* ─── Top Area: uncropped 16:9 media stage ─── */}
-                        <div className="relative p-3">
-                            <div
-                                className="relative aspect-video overflow-hidden rounded-[30px]"
-                                style={{ background: accentStage(accentColor) }}
-                            >
-                                <div
-                                    className={cn(
-                                        "absolute inset-4 md:inset-8 lg:inset-10",
-                                        hasSwitcher ? "md:bottom-28 lg:bottom-28" : "md:bottom-24 lg:bottom-24"
-                                    )}
-                                >
-                                    <AnimatePresence mode="wait" initial={false}>
-                                        <motion.div
-                                            key={currentMedia.url}
-                                            className="absolute inset-0"
-                                            initial={{ opacity: 0, scale: 0.985 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.995 }}
-                                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                                        >
-                                            {isVideo ? (
-                                                <video
-                                                    ref={videoRef}
-                                                    className="h-full w-full cursor-pointer object-contain drop-shadow-[0_24px_40px_rgb(0_0_0/0.22)]"
-                                                    src={currentMedia.url}
-                                                    poster={currentMedia.poster}
-                                                    autoPlay
-                                                    muted
-                                                    playsInline
-                                                    preload="auto"
-                                                    onClick={toggleMainVideo}
-                                                    onKeyDown={(event) => {
-                                                        if (event.key === "Enter" || event.key === " ") {
-                                                            event.preventDefault();
-                                                            toggleMainVideo();
-                                                        }
-                                                    }}
-                                                    onPlay={() => setIsPlaying(true)}
-                                                    onPause={() => setIsPlaying(false)}
-                                                    onEnded={handleVideoEnded}
-                                                    tabIndex={0}
-                                                    aria-label={`${currentMedia.caption} Press to play or pause.`}
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src={currentMedia.url}
-                                                    alt={currentMedia.caption}
-                                                    fill
-                                                    sizes="(min-width: 1280px) 1180px, 92vw"
-                                                    loading="eager"
-                                                    className="object-contain drop-shadow-[0_24px_40px_rgb(0_0_0/0.22)]"
-                                                />
-                                            )}
-                                        </motion.div>
-                                    </AnimatePresence>
-
-                                    {/* Paused indicator */}
-                                    <AnimatePresence>
-                                        {isVideo && !isPlaying && (
-                                            <motion.div
-                                                className="pointer-events-none absolute inset-0 flex items-center justify-center"
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.8 }}
-                                                transition={SNAP_SPRING}
-                                            >
-                                                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-glass text-foreground shadow-lifted backdrop-blur-2xl">
-                                                    <Play className="ml-1 h-6 w-6 fill-current" />
-                                                </span>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-
-                                {/* Top right controls: fullscreen lightbox + close */}
-                                <div className="absolute right-4 top-4 z-20 flex items-center gap-2 md:right-5 md:top-5">
-                                    <button
-                                        ref={maximizeButtonRef}
-                                        type="button"
-                                        onClick={openLightbox}
-                                        className={glassButton}
-                                        aria-label="View fullscreen"
-                                    >
-                                        <Maximize2 className="h-4 w-4" />
-                                    </button>
-                                    <button
-                                        ref={closeButtonRef}
-                                        type="button"
-                                        onClick={onClose}
-                                        className={glassButton}
-                                        aria-label="Close project"
-                                    >
-                                        <X className="h-[18px] w-[18px]" />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* ─── Floating glass switcher (overlays stage on md+, sits below on mobile) ─── */}
-                            <div className="mt-3 flex justify-center md:absolute md:inset-x-3 md:bottom-8 md:mt-0">
-                                <div className="flex max-w-full flex-col items-center gap-3 rounded-[26px] p-2 max-md:bg-surface max-md:dark:bg-white/[0.06] md:flex-row md:bg-glass md:pr-5 md:shadow-lifted md:backdrop-blur-2xl md:backdrop-saturate-150">
-                                    {hasSwitcher && (
-                                        <div className="flex shrink-0 items-center gap-2" role="group" aria-label="Project media">
-                                            {gallery.map((item, idx) => {
-                                                const thumb = getThumb(item);
-                                                const isActive = idx === activeIndex;
-                                                return (
-                                                    <button
-                                                        key={item.url}
-                                                        type="button"
-                                                        onClick={() => selectMedia(idx)}
-                                                        aria-label={`Show media ${idx + 1}: ${item.caption}`}
-                                                        aria-pressed={isActive}
-                                                        className={cn(
-                                                            "relative h-10 w-16 rounded-[14px] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60",
-                                                            isActive ? "opacity-100" : "opacity-50 hover:opacity-90"
-                                                        )}
-                                                    >
-                                                        {isActive && (
-                                                            <motion.span
-                                                                layoutId={`thumb-indicator-${project.id}`}
-                                                                className="absolute -inset-[3px] rounded-[17px] ring-2 ring-foreground"
-                                                                transition={SNAP_SPRING}
-                                                            />
-                                                        )}
-                                                        <span className="absolute inset-0 overflow-hidden rounded-[14px] bg-background">
-                                                            {thumb ? (
-                                                                <Image src={thumb} alt="" fill sizes="64px" className="object-cover" />
-                                                            ) : (
-                                                                <Play className="m-auto h-full w-3 fill-current text-muted-foreground" />
-                                                            )}
-                                                        </span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-
-                                    <div
-                                        className={cn(
-                                            "flex min-h-10 items-center gap-3 px-3 pb-1 md:max-w-[460px] md:px-0 md:pb-0",
-                                            !hasSwitcher && "md:px-3"
-                                        )}
-                                        aria-live="polite"
-                                    >
-                                        <span className="shrink-0 font-mono text-[11px] tabular-nums tracking-wider text-muted-foreground">
-                                            {counter}
-                                        </span>
-                                        <AnimatePresence mode="wait" initial={false}>
-                                            <motion.p
-                                                key={currentMedia.url}
-                                                className="font-mono text-[12px] uppercase leading-snug tracking-wide text-foreground"
-                                                initial={{ opacity: 0, y: 4, filter: "blur(4px)" }}
-                                                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                                                exit={{ opacity: 0, y: -4, filter: "blur(4px)" }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                {currentMedia.caption}
-                                            </motion.p>
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ─── Project header ─── */}
-                        <header className="flex flex-col gap-5 px-8 pt-6 md:pt-8">
-                            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-                                <a
-                                    href={project.projectUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group/logo inline-flex items-center gap-2.5 rounded-full bg-surface px-4 py-2.5 transition-[scale] duration-300 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60 dark:bg-white/[0.06]"
-                                >
-                                    <Image
-                                        src={project.logoUrl}
-                                        alt={`${project.title.split(" | ")[0]} logo`}
-                                        width={120}
-                                        height={32}
-                                        unoptimized
-                                        className="h-5 w-auto brightness-0 dark:invert"
-                                    />
-                                    <ExternalLink
-                                        className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover/logo:text-foreground"
-                                        aria-hidden="true"
-                                    />
+                    <div className="absolute right-4 top-4 z-30 flex gap-2">
+                        <button ref={maximizeButtonRef} type="button" onClick={openLightbox} className={glassButton} aria-label="View fullscreen">
+                            <Maximize2 className="h-4 w-4" />
+                        </button>
+                        <button ref={closeButtonRef} type="button" onClick={onClose} className={glassButton} aria-label="Close project">
+                            <X className="h-[18px] w-[18px]" />
+                        </button>
+                    </div>
+                    <div className="max-h-[92dvh] overflow-y-auto overscroll-contain">
+                        <header className="flex flex-col gap-3 px-5 pb-5 pt-5 md:px-8 md:pb-6 md:pt-6">
+                            <div className="flex min-h-11 items-center pr-24">
+                                <a href={project.projectUrl} target="_blank" rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60">
+                                    <Image src={project.logoUrl} alt={`${project.title.split(" | ")[0]} logo`} width={120} height={32} unoptimized className="h-5 w-auto brightness-0 dark:invert" />
+                                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                                     <span className="sr-only">(opens project site in a new tab)</span>
                                 </a>
-                                <p className="font-mono text-[12px] uppercase leading-relaxed tracking-wider text-muted-foreground">
-                                    {project.role} · {project.timeline}
-                                </p>
                             </div>
-                            <h2
-                                id="project-modal-title"
-                                className="max-w-4xl text-3xl font-semibold leading-[1.05] tracking-display text-foreground md:text-5xl"
-                            >
+                            <h2 id="project-modal-title" className="max-w-5xl text-2xl font-semibold leading-tight tracking-display text-foreground md:text-[32px]">
                                 {project.title}
                             </h2>
+                            <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">
+                                {project.role} · {project.timeline}
+                            </p>
+                            <p className="max-w-4xl text-[15px] leading-relaxed text-foreground">{project.summary}</p>
                         </header>
 
-                        {/* ─── Bottom Area: 3 column architectural grid ─── */}
-                        <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-3">
+                        <figure className="border-y border-foreground/10">
+                            <div className="relative mx-auto aspect-video w-full bg-background"
+                                style={{ maxWidth: "min(100%, calc(52dvh * 16 / 9))" }}>
+                                <AnimatePresence mode="wait" initial={false}>
+                                    <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
+                                        initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
+                                        transition={{ duration: reducedMotion ? 0 : 0.12 }}>
+                                        {isVideo ? (
+                                            <video ref={videoRef} className="h-full w-full cursor-pointer object-contain"
+                                                src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} muted playsInline preload="metadata"
+                                                onClick={toggleMainVideo}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter" || event.key === " ") {
+                                                        event.preventDefault(); toggleMainVideo();
+                                                    }
+                                                }}
+                                                onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={handleVideoEnded}
+                                                tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
+                                        ) : currentMedia.nativeWidth ? (
+                                            <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)}
+                                                sizes="(min-width: 1280px) 960px, 94vw" loading="eager"
+                                                className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />
+                                        ) : (
+                                            <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="(min-width: 1280px) 960px, 94vw" loading="eager" className="object-contain" />
+                                        )}
+                                        {isVideo && !isPlaying && (
+                                            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-elevation">
+                                                    <Play className="ml-0.5 h-5 w-5 fill-current" />
+                                                </span>
+                                            </span>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
+                            <figcaption className="flex flex-col gap-3 border-t border-foreground/10 px-5 py-4 md:flex-row md:items-center md:gap-5 md:px-8">
+                                {hasSwitcher && (
+                                    <div className="flex shrink-0 gap-2" role="group" aria-label="Project media">
+                                        {gallery.map((item, idx) => {
+                                            const thumb = getThumb(item);
+                                            const isActive = idx === activeIndex;
+                                            return (
+                                                <button key={item.url} type="button" onClick={() => selectMedia(idx)}
+                                                    aria-label={`Show media ${idx + 1}: ${item.caption}`} aria-pressed={isActive}
+                                                    className={cn("relative h-11 w-16 overflow-hidden rounded-md border transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60",
+                                                        isActive ? "border-foreground" : "border-foreground/15 hover:border-foreground/60")}>
+                                                    {thumb ? <Image src={thumb} alt="" fill sizes="64px" className="object-cover" /> : <Play className="m-auto h-4 w-4 fill-current" />}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                                <div className="flex items-start gap-3 font-mono text-[11px] leading-relaxed text-muted-foreground" aria-live="polite" aria-atomic="true">
+                                    <span className="shrink-0 tabular-nums">{counter}</span>
+                                    <p>{mediaCaption}</p>
+                                </div>
+                            </figcaption>
+                        </figure>
+
+                        <div className="grid grid-cols-1 gap-8 px-5 py-8 md:grid-cols-3 md:px-8">
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-challenge">
-                                <h3 id="narrative-challenge" className={NARRATIVE_LABEL}>
-                                    01 / The Challenge
-                                </h3>
+                                <h3 id="narrative-challenge" className={NARRATIVE_LABEL}>01 / The Challenge</h3>
                                 <p className="text-[15px] leading-relaxed text-muted-foreground">{project.challenge}</p>
                             </section>
-
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-architecture">
-                                <h3 id="narrative-architecture" className={NARRATIVE_LABEL}>
-                                    02 / System Architecture
-                                </h3>
+                                <h3 id="narrative-architecture" className={NARRATIVE_LABEL}>02 / Decisions & Tradeoffs</h3>
                                 <p className="text-[15px] leading-relaxed text-muted-foreground">{project.architecture}</p>
                             </section>
-
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-impact">
-                                <h3 id="narrative-impact" className={NARRATIVE_LABEL}>
-                                    03 / Verified Impact
-                                </h3>
-                                <ul className="flex flex-col gap-5">
+                                <h3 id="narrative-impact" className={NARRATIVE_LABEL}>03 / Outcomes & Evidence</h3>
+                                <ul className="flex flex-col gap-6">
                                     {project.impact.map((item) => (
-                                        <li key={item.metric} className="flex flex-col gap-1.5">
-                                            <span className="flex items-center gap-2 text-[17px] font-semibold leading-snug tracking-tight text-foreground">
-                                                <span
-                                                    className="h-2 w-2 shrink-0 rounded-full"
-                                                    style={{ backgroundColor: accentColor }}
-                                                    aria-hidden="true"
-                                                />
+                                        <li key={item.metric} className="flex flex-col gap-2">
+                                            <span className="flex items-start gap-2 text-[17px] font-semibold leading-snug tracking-tight text-foreground">
+                                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: accentColor }} aria-hidden="true" />
                                                 {item.metric}
                                             </span>
+                                            <span className="font-mono text-[11px] leading-relaxed text-muted-foreground">{item.provenance}</span>
                                             <span className="text-[15px] leading-relaxed text-muted-foreground">{item.detail}</span>
                                         </li>
                                     ))}
@@ -415,61 +291,25 @@ const ProjectModalContent = ({
                     </div>
                 </motion.div>
             </div>
-
-            {/* ─── Fullscreen lightbox ─── */}
             <AnimatePresence>
                 {isLightboxOpen && (
-                    <motion.div
-                        ref={lightboxRef}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={`${project.title} fullscreen media`}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black p-4 md:p-10"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                    >
-                        <button
-                            type="button"
-                            onClick={closeLightbox}
-                            className="absolute right-6 top-6 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-                            aria-label="Exit fullscreen"
-                            autoFocus
-                        >
-                            <X className="h-5 w-5" />
-                        </button>
-
-                        <div className="relative h-full w-full">
+                    <motion.div ref={lightboxRef} role="dialog" aria-modal="true" aria-label={`${project.title} fullscreen media`}
+                        className="fixed inset-0 z-[100] flex flex-col bg-black px-4 pb-4 pt-20 md:px-10 md:pb-8"
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? 0 : 0.18 }}>
+                        <button type="button" onClick={closeLightbox}
+                            className="absolute right-6 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                            aria-label="Exit fullscreen" autoFocus><X className="h-5 w-5" /></button>
+                        <div className="relative min-h-0 flex-1 flex items-center justify-center">
                             {isVideo ? (
-                                <video
-                                    className="h-full w-full cursor-pointer object-contain"
-                                    src={currentMedia.url}
-                                    poster={currentMedia.poster}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    onClick={(event) => {
-                                        const video = event.currentTarget;
-                                        if (video.paused) video.play().catch(() => {});
-                                        else video.pause();
-                                    }}
-                                />
+                                <video className="h-full w-full object-contain" src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} loop={!reducedMotion} muted playsInline controls />
+                            ) : currentMedia.nativeWidth ? (
+                                <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)} sizes="100vw"
+                                    className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />
                             ) : (
-                                <Image
-                                    src={currentMedia.url}
-                                    alt={currentMedia.caption}
-                                    fill
-                                    sizes="100vw"
-                                    className="object-contain"
-                                />
+                                <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="100vw" className="object-contain" />
                             )}
                         </div>
-
-                        <p className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent px-8 pb-8 pt-16 text-center font-mono text-[12px] uppercase tracking-wide text-white/90">
-                            {currentMedia.caption}
-                        </p>
+                        <p className="shrink-0 pt-4 text-center font-mono text-[11px] leading-relaxed text-white/80">{mediaCaption}</p>
                     </motion.div>
                 )}
             </AnimatePresence>

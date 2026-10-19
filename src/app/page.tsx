@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
@@ -21,16 +21,28 @@ interface ImpactFilter {
     label: string;
 }
 
-/** Impact Lens: each pill spotlights one project card. */
+/** Filters change the displayed work only after explicit selection. */
 const IMPACT_FILTERS: ImpactFilter[] = [
-    { key: "all", label: `All Systems (${projects.length})` },
-    { key: "stellar-cyber", label: "2,800 WAU Threat AI" },
-    { key: "papertrail", label: "85% Confidence Threshold UI" },
-    { key: "amazon", label: "Global Series Customization" },
-    { key: "cisco", label: "6 Mo → 2 Wk Test Automation" },
+    { key: "all", label: `All Work (${projects.length})` },
+    { key: "stellar-cyber", label: "Enterprise Threat AI · Stellar Cyber" },
+    { key: "papertrail", label: "0→1 Fintech AI · PaperTrail" },
+    { key: "amazon", label: "Mobile Commerce · Amazon Books" },
+    { key: "cisco", label: "Developer Systems · Cisco" },
 ];
 
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const PROJECT_CHANGE = "portfolio-project-change";
+const subscribeToProject = (notify: () => void) => {
+    window.addEventListener("popstate", notify);
+    window.addEventListener(PROJECT_CHANGE, notify);
+    return () => {
+        window.removeEventListener("popstate", notify);
+        window.removeEventListener(PROJECT_CHANGE, notify);
+    };
+};
+const readProjectId = () => new URLSearchParams(window.location.search).get("project") ?? "";
+const serverProjectId = () => "";
 
 /* ─── Spring physics theme switch ─── */
 const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) => (
@@ -68,12 +80,8 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 const Index = () => {
     const [isDark, setIsDark] = useState(false);
     const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
-    const [hoveredFilter, setHoveredFilter] = useState<FilterKey | null>(null);
-    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-
-    // Hover previews a lens; otherwise the clicked lens stays engaged.
-    const lens = hoveredFilter ?? activeFilter;
-    const spotlightId: ProjectId | null = lens === "all" ? null : lens;
+    const projectId = useSyncExternalStore(subscribeToProject, readProjectId, serverProjectId);
+    const selectedProject = projects.find((project) => project.id === projectId) ?? null;
 
     const toggleTheme = useCallback(() => {
         const next = !isDark;
@@ -91,17 +99,25 @@ const Index = () => {
 
     const selectFilter = (key: FilterKey) => {
         setActiveFilter(key);
-        if (key === "all") return;
-        // Bring the spotlit card into view if it is off screen.
-        const card = document.getElementById(`project-${key}`);
-        if (!card) return;
-        const { top, bottom } = card.getBoundingClientRect();
-        if (top < 140 || bottom > window.innerHeight) {
-            card.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
-        }
     };
 
-    const closeModal = useCallback(() => setSelectedProject(null), []);
+    const openModal = useCallback((project: Project) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("project", project.id);
+        window.history.pushState({ ...window.history.state, portfolioModal: true }, "", url);
+        window.dispatchEvent(new Event(PROJECT_CHANGE));
+    }, []);
+
+    const closeModal = useCallback(() => {
+        if (window.history.state?.portfolioModal) {
+            window.history.back();
+        } else {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("project");
+            window.history.replaceState(window.history.state, "", url);
+            window.dispatchEvent(new Event(PROJECT_CHANGE));
+        }
+    }, []);
 
     return (
         <MotionConfig reducedMotion="user">
@@ -151,15 +167,14 @@ const Index = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.9, delay: 0.2, ease: ENTER_EASE }}
                         >
-                            8+ years architecting AI native systems, agentic workflows, and enterprise developer
-                            platforms. Combining systems thinking and human in the loop craft with production code
-                            fluency in React, Next.js, TypeScript, Claude Code, and Cursor.
+                            8+ years architecting enterprise security telemetry, high volume consumer flows, and
+                            human in the loop AI systems at Cisco, Amazon, and Stellar Cyber.
                         </motion.p>
                     </section>
 
                     {/* ─── Impact Lens filter bar (sticks under the header while browsing) ─── */}
                     <motion.section
-                        aria-label="Impact Lens"
+                        aria-label="Filter work"
                         className="sticky top-16 z-30 bg-background/70 backdrop-blur-2xl backdrop-saturate-150"
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -167,24 +182,20 @@ const Index = () => {
                     >
                         <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
                             <span className="hidden shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground lg:inline">
-                                Impact Lens
+                                Selected work
                             </span>
                             <div className="no-scrollbar -mx-6 min-w-0 flex-1 overflow-x-auto px-6 lg:mx-0 lg:px-0">
                                 <div
                                     className="inline-flex gap-1 rounded-full bg-surface p-1.5"
-                                    onMouseLeave={() => setHoveredFilter(null)}
                                 >
                                     {IMPACT_FILTERS.map((filter) => {
-                                        const isLit = lens === filter.key;
+                                        const isLit = activeFilter === filter.key;
                                         return (
                                             <button
                                                 key={filter.key}
                                                 type="button"
                                                 aria-pressed={activeFilter === filter.key}
                                                 onClick={() => selectFilter(filter.key)}
-                                                onMouseEnter={() => setHoveredFilter(filter.key)}
-                                                onFocus={() => setHoveredFilter(filter.key)}
-                                                onBlur={() => setHoveredFilter(null)}
                                                 className={cn(
                                                     "relative whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium tracking-tight transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60",
                                                     isLit ? "text-background" : "text-muted-foreground hover:text-foreground"
@@ -208,7 +219,7 @@ const Index = () => {
 
                     {/* ─── 2x2 Bento showcase ─── */}
                     <section aria-label="Selected work" className="mx-auto max-w-7xl px-6 pb-28 pt-8">
-                        <ProjectGrid spotlightId={spotlightId} onProjectSelect={setSelectedProject} />
+                        <ProjectGrid filterId={activeFilter === "all" ? null : activeFilter} onProjectSelect={openModal} />
                     </section>
                 </main>
 

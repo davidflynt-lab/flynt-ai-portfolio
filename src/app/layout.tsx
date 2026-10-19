@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "David Flynt | Lead Product Designer & Design Engineer",
   description:
-    "Portfolio of David Flynt. 8+ years architecting AI native systems, agentic workflows, and enterprise developer platforms.",
+    "Portfolio of David Flynt. 8+ years architecting enterprise security telemetry, consumer flows, and human in the loop AI systems at Cisco, Amazon, and Stellar Cyber.",
 };
 
 export default function RootLayout({

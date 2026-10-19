@@ -10,12 +10,15 @@ export interface GalleryItem {
     thumb?: string;
     /** Poster frame for video items. */
     poster?: string;
+    /** Native source width caps enlargement of static artwork. */
+    nativeWidth?: number;
 }
 
 export interface ImpactItem {
     /** Lead metric, e.g. "2,800 WAU". */
     metric: string;
     detail: string;
+    provenance: string;
 }
 
 export interface Project {
@@ -25,7 +28,9 @@ export interface Project {
     timeline: string;
     /** One sentence summary shown on the bento card. */
     cardSummary: string;
-    /** Brand tint for the 16:9 media stage. */
+    /** Core decision shown before the project media. */
+    summary: string;
+    /** Brand accent for metric markers. */
     accentColor: string;
     logoUrl: string;
     projectUrl: string;
@@ -43,13 +48,6 @@ export interface Project {
 export const getThumb = (item: GalleryItem): string | undefined =>
     item.thumb ?? item.poster ?? (item.type === "image" ? item.url : undefined);
 
-/**
- * Accent tinted backdrop for 16:9 media stages. Uses translucent layers of the
- * project accent (6 digit hex) so it reads correctly over light and dark surfaces.
- */
-export const accentStage = (accentColor: string): string =>
-    `radial-gradient(120% 100% at 50% 0%, ${accentColor}3d 0%, ${accentColor}1f 48%, ${accentColor}0f 100%)`;
-
 export const projects: Project[] = [
     {
         id: "stellar-cyber",
@@ -58,6 +56,7 @@ export const projects: Project[] = [
         timeline: "Jan 2023 to July 2025 (Series B to Series C growth)",
         cardSummary:
             "Unified fragmented security workflows and natural language query translation for 2,800 weekly active users.",
+        summary: "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
         accentColor: "#FF5500",
         logoUrl: "/logos/Stellar_logo.svg",
         projectUrl: "https://stellarcyber.ai/ai-investigator-natural-language-threat-hunting/",
@@ -94,23 +93,26 @@ export const projects: Project[] = [
             },
         ],
         challenge:
-            "Supporting 2,800 weekly active technical users on an enterprise Open XDR platform, behavioral telemetry revealed a massive workflow bottleneck: while 1,110 security analysts actively hunted threats every week, standalone query builder tools saw only 18 pageviews. Analysts struggled to write complex Elasticsearch syntax manually, and jumping across disconnected tabs caused severe alert fatigue and cold storage search timeouts.",
+            "Supporting 2,800 weekly active technical users on an enterprise Open XDR platform, behavioral telemetry revealed a massive workflow bottleneck: while 1,110 security analysts actively hunted threats every week, standalone query builder tools saw only 18 pageviews. Analysts had to write complex Elasticsearch syntax and move between disconnected tools. Large historical searches also needed clear progress states and asynchronous data recall.",
         architecture:
-            "Rather than slapping a black box chatbot onto legacy tables, I built an interactive consensus prototype for the AI Investigation Notebook to align product and engineering around model latency, hallucination recovery, and API feasibility. I designed natural language security query workflows that translated analyst intent into inspectable, editable backend query syntax so analysts could codrive searches with full control. Standardized CVE progressive disclosure specs pairing compact severity cues with on demand exploit telemetry and architected asynchronous cold storage query flows.",
+            "Rejected an opaque auto executing chat assistant because analysts need to verify queries during live investigations. I designed natural language inputs that compile into inspectable, editable Elasticsearch syntax cards. An interactive prototype aligned product and engineering around latency, model error recovery, and API feasibility. CVE disclosure specs and asynchronous cold storage flows extended that approach to deeper investigation.",
         impact: [
             {
                 metric: "2,800 WAU",
                 detail: "Scaled core platform UX across enterprise security teams from Series B to Series C.",
+                provenance: "Source: Mixpanel platform telemetry across the Series B to C rollout, 2023 to 2025.",
             },
             {
-                metric: "1,110 vs. 18 Telemetry Insight",
+                metric: "1,110 Active Hunters vs. 18 Query Pageviews",
                 detail:
-                    "Used hard behavioral data to unify threat hunting and natural language query creation into a single workspace, supporting executive targets to cut Mean Time to Resolve (MTTR).",
+                    "Used this behavioral baseline to bring threat hunting and query creation into one workspace. Active users and pageviews are different measures, not a conversion rate.",
+                provenance: "Source: 7 day Mixpanel behavioral baseline comparing weekly active hunters with query pageviews.",
             },
             {
                 metric: "$150K ARR Preserved",
                 detail:
-                    "Asynchronous cold storage search architecture eliminated query timeouts for high volume enterprise tenants and modernized multi tenant role based access control (RBAC).",
+                    "Contributed to retaining an enterprise renewal by shipping asynchronous cold storage query recall workflows.",
+                provenance: "Source: enterprise renewal retained following the cold storage workflow release.",
             },
         ],
     },
@@ -121,6 +123,7 @@ export const projects: Project[] = [
         timeline: "July 2025 to Present (Georgia Tech CREATE X Accelerator)",
         cardSummary:
             "0 to 1 product strategy, calibrated trust mechanics, and production Next.js/TypeScript engineering for rental property owners.",
+        summary: "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
         accentColor: "#00E599",
         logoUrl: "/logos/Papertrail_logo.svg",
         projectUrl: "https://papertrail.finance",
@@ -157,24 +160,27 @@ export const projects: Project[] = [
             },
         ],
         challenge:
-            "Rental property owners and hospitality hosts managing unstructured paper receipts face a critical trust gap with AI financial tools: blind automation creates tax audit liabilities when models hallucinate, while manually reviewing bounding boxes on every line item causes cognitive overload and ruins unit economics.",
+            "Property owners need accurate expense records without checking every receipt from scratch. Model errors create uncertainty around property assignment and expense categorization. We considered source highlighting, but coordinate extraction added model cost, so we kept the receipt beside editable fields and focused attention on uncertainty.",
         architecture:
-            "Partnering with my data scientist cofounder, I architected the 0 to 1 product strategy and shipped the production frontend directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. I engineered human in the loop supervision patterns centered on an 85% confidence threshold: high confidence extractions flow cleanly, while under 85% fields automatically flag exception recovery states for side by side human verification. Beyond static dashboards, I structured proactive AI financial guidance and status transparency.",
+            "Rejected full background categorization in favor of owner verification. I built a receipt and form review loop where fields below the 85% confidence design threshold receive an amber cue. Owners can compare the source and edit every value before saving. Partnering with my data scientist cofounder, I shipped the production frontend in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code.",
         impact: [
             {
-                metric: "85% Confidence Threshold UI",
+                metric: "85% Interaction Design Threshold",
                 detail:
-                    "Calibrated user trust, surfaced inline exception recovery states, and protected unit inference margins while guaranteeing 100% audit control.",
+                    "Gives property owners full field level review and edit control before saving records, using an 85% OCR confidence design threshold to flag uncertain extractions for human verification.",
+                provenance: "Design rule: below 85% triggers an amber review cue. This threshold is not an ML accuracy claim.",
             },
             {
                 metric: "Usability Research (n=8 Operators)",
                 detail:
-                    "Conducted testing with 8 property owners, replacing high friction date pickers with prescoped tax year context chips and architecting real time batch review workflows.",
+                    "Testing with 8 property owners led us to replace complex calendar date pickers with prescoped tax year context chips. The beta reviews one receipt at a time; batch processing remains on the roadmap.",
+                provenance: "Source: early usability testing with 8 property operators, including family and CREATE X testers.",
             },
             {
                 metric: "Georgia Tech CREATE X",
                 detail:
                     "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
+                provenance: "Source: Georgia Tech CREATE X accelerator participation and Demo Day launch.",
             },
         ],
     },
@@ -185,6 +191,7 @@ export const projects: Project[] = [
         timeline: "July 2022 to Oct 2022",
         cardSummary:
             "High volume mobile edition swap and checkout flows shipped globally to millions of readers.",
+        summary: "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
         accentColor: "#00C805",
         logoUrl: "/logos/Amazon_logo.svg",
         projectUrl: "https://www.amazon.com/b?ie=UTF8&node=13633915011",
@@ -204,17 +211,19 @@ export const projects: Project[] = [
         challenge:
             "Millions of readers purchasing multi book series on Amazon Mobile encountered rigid bundle states. Book collectors who already owned specific editions or preferred matching formats (hardcover vs paperback vs media tie in) lacked a lightweight way to customize individual books inside the Buy the Series checkout flow without abandoning the funnel.",
         architecture:
-            "Working within Amazon's global design system and strict mobile interaction standards, I designed a 4 step inline customization architecture: (1) Toggle on Customize editions, (2) Tap inline Swap triggers per book, (3) Select desired format and publisher edition in a clean bottom sheet, and (4) Confirm via immediate popover feedback (Book 1 substituted) with real time bundle price recalculation.",
+            "Worked within Amazon Shopping component constraints and rejected sending users to separate product pages. I designed a 4 step inline edition swap: (1) Toggle on Customize editions, (2) Tap inline Swap triggers per book, (3) Select desired format and publisher edition in a clean bottom sheet, and (4) Confirm via immediate popover feedback (Book 1 substituted) with real time bundle price recalculation.",
         impact: [
             {
                 metric: "Global Consumer Scale",
                 detail:
-                    "Passed rigorous Amazon executive design reviews and launched worldwide to millions of mobile shoppers.",
+                    "Passed Amazon design reviews and launched the series customization flow globally on mobile.",
+                provenance: "Source: global rollout of series customization on Amazon Mobile.",
             },
             {
                 metric: "Data Science Experimentation",
                 detail:
-                    "Partnered with data science teams on multivariate A/B testing to evaluate discovery and purchase completion while meeting strict WCAG accessibility standards.",
+                    "Partnered with data science teams on multivariate A/B testing to evaluate discovery and purchase completion while meeting accessibility standards.",
+                provenance: "Source: collaboration with the data science team on discovery and purchase completion experiments.",
             },
         ],
     },
@@ -225,6 +234,7 @@ export const projects: Project[] = [
         timeline: "Dec 2017 to Feb 2022",
         cardSummary:
             "Unified Single Pane of Glass orchestration and ML failure diagnostics for 500+ hardware and network engineers.",
+        summary: "Consolidated test workflows and surfaced diagnostic signals for 500+ engineers across five global teams.",
         accentColor: "#0055FF",
         logoUrl: "/logos/Cisco_logo.svg",
         projectUrl: "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",
@@ -233,8 +243,9 @@ export const projects: Project[] = [
             {
                 url: "/images/cisco-hero.png",
                 type: "image",
+                nativeWidth: 1920,
                 caption:
-                    "Unified Single Pane of Glass test orchestration workspace for 500+ global engineers.",
+                    "FIG 01 · CAFY & CQE Unified Ecosystem Portal: Single entry point consolidating 5 fragmented test automation tools for 500+ Cisco engineers.",
             },
             // Pending assets (not yet in /public). Uncomment once the files are added:
             // { url: "/projects/cisco/csc-01.mp4", type: "video", caption: "Smart Debug machine learning probability scores predicting software versus hardware root causes." },
@@ -244,17 +255,19 @@ export const projects: Project[] = [
         challenge:
             "In Cisco's Mass Infrastructure Group, hardware and network engineers certifying enterprise routers across 10,000+ test cases had to context switch across a dozen fragmented internal tools. Diagnosing whether a test failure stemmed from a software bug or a hardware defect required manual log scraping, stretching router certification cycles to 6 months.",
         architecture:
-            "Embedded directly within the frontend engineering org, I unified fragmented developer and network tools into a cohesive Single Pane of Glass orchestration workspace. I designed the UX architecture for Smart Debug, an early machine learning observability tool that surfaced failure probability scores to help engineers triage root causes and prevent downtime.",
+            "Embedded within frontend engineering, I consolidated 5 CLI and web diagnostic tools into a unified CQE workflow. Smart Debug surfaced ML failure probability scores inline so engineers could triage likely root causes before reviewing raw logs. The portal shown here provided the entry point to that ecosystem.",
         impact: [
             {
                 metric: "6 Months → 2 Weeks",
                 detail:
-                    "Contributed to slashing hardware test certification cycles from six months down to two weeks through unified workflow orchestration.",
+                    "Contributed to reducing router OS certification cycles through unified workflow orchestration and test automation.",
+                provenance: "Source: router OS certification cycle across 10,000+ automated test cases.",
             },
             {
                 metric: "500+ Engineers Across 5 Global Teams",
                 detail:
                     "Helped establish and govern an enterprise design system and reusable telemetry component library adopted across five global engineering organizations.",
+                provenance: "Scope: 500+ engineers across five global engineering teams.",
             },
         ],
     },
