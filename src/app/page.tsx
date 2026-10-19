@@ -8,6 +8,7 @@ import StippledHero from "@/components/StippledHero";
 import ProjectGrid from "@/components/ProjectGrid";
 import ProjectModal from "@/components/ProjectModal";
 import ContactButton from "@/components/ContactButton";
+import ContactLinks from "@/components/ContactLinks";
 import { Project, ProjectId, projects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
@@ -139,13 +140,16 @@ const Index = () => {
                             <span className="text-sm text-muted-foreground/40" aria-hidden="true">
                                 |
                             </span>
-                            <ContactButton />
+                            <div className="flex shrink-0 items-center gap-1">
+                                <ContactButton />
+                                <ContactLinks includeEmail={false} placement="below" />
+                            </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <span className="hidden whitespace-nowrap text-sm text-muted-foreground md:inline">
+                            <span className="hidden whitespace-nowrap text-sm text-muted-foreground lg:inline">
                                 Product Designer & Design Engineer
                             </span>
-                            <span className="hidden text-sm text-muted-foreground/40 md:inline" aria-hidden="true">
+                            <span className="hidden text-sm text-muted-foreground/40 lg:inline" aria-hidden="true">
                                 |
                             </span>
                             <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
@@ -214,8 +218,7 @@ const Index = () => {
                             <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted-foreground">Architected in Next.js, TypeScript &amp; Tailwind CSS.</p>
                         </div>
                         <nav aria-label="Contact and links" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="mailto:flynt.art@gmail.com" aria-label="Email flynt.art@gmail.com">Email</a>
-                            <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://www.linkedin.com/in/david-flynt-2979048/" target="_blank" rel="noopener noreferrer">LinkedIn<span className="sr-only"> (opens in a new tab)</span></a>
+                            <ContactLinks />
                             <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://github.com/davidflynt-lab" target="_blank" rel="noopener noreferrer">GitHub<span className="sr-only"> (opens in a new tab)</span></a>
                             <a className="inline-flex min-h-11 items-center underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4" href="https://papertrail.finance" target="_blank" rel="noopener noreferrer">Live Product: papertrail.finance ↗<span className="sr-only"> (opens in a new tab)</span></a>
                         </nav>
