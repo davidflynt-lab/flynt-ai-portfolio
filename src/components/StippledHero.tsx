@@ -251,6 +251,7 @@ function createField(canvas: HTMLCanvasElement, stage: HTMLElement, initialMotio
     document.addEventListener("visibilitychange", reconcile);
     canvas.addEventListener("webglcontextlost", lost);
     stage.dataset.renderer = "webgl";
+    canvas.style.opacity = "1";
     resize();
     reconcile();
 
@@ -295,7 +296,7 @@ export default function StippledHero({ sectionRef, suspended }: { sectionRef: Re
 
     return (
         <section ref={sectionRef} className="signal-hero group relative isolate overflow-hidden bg-[#09090B] text-white" data-renderer="fallback" aria-labelledby="hero-title">
-            <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />
+            <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-0" aria-hidden="true" />
             <div className="signal-grid pointer-events-none absolute inset-0" aria-hidden="true" />
             <div className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-32 sm:pb-28 sm:pt-36 lg:pb-24 lg:pt-36">
                 <h1 id="hero-title" className="text-[64px] font-semibold leading-[0.92] tracking-[-0.055em] sm:text-[96px] lg:text-[128px]">David Flynt</h1>
