@@ -62,6 +62,7 @@ const ProjectModalContent = ({
     );
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [hasScrolled, setHasScrolled] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const loopCountRef = useRef(0);
@@ -185,7 +186,10 @@ const ProjectModalContent = ({
                             <X className="h-[18px] w-[18px]" />
                         </button>
                     </div>
-                    <div className="max-h-[92dvh] overflow-y-auto overscroll-contain">
+                    <div className="max-h-[92dvh] overflow-y-auto overscroll-contain pb-16"
+                        onScroll={(event) => {
+                            if (!hasScrolled && event.currentTarget.scrollTop > 0) setHasScrolled(true);
+                        }}>
                         <header className="flex flex-col gap-3 px-5 pb-5 pt-5 md:px-8 md:pb-6 md:pt-6">
                             <div className="flex min-h-11 items-center pr-24">
                                 <a href={project.projectUrl} target="_blank" rel="noopener noreferrer"
@@ -262,6 +266,16 @@ const ProjectModalContent = ({
                                 </div>
                             </figcaption>
                         </figure>
+
+                        <motion.p
+                            initial={false}
+                            animate={{ opacity: hasScrolled ? 0 : 0.5 }}
+                            transition={{ duration: reducedMotion ? 0 : 0.18 }}
+                            aria-hidden={hasScrolled}
+                            className="pointer-events-none px-5 pt-4 font-mono text-[11px] text-foreground md:px-8"
+                        >
+                            Scroll for case study details ↓
+                        </motion.p>
 
                         <div className="grid grid-cols-1 gap-8 px-5 py-8 md:grid-cols-3 md:px-8">
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-challenge">

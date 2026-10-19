@@ -100,14 +100,14 @@ const projectCatalog: Project[] = [
             {
                 metric: "85% Confidence Design Threshold",
                 detail:
-                    "Gives property owners full field level review and edit control before saving records, using an 85% OCR confidence design threshold to flag uncertain extractions for human verification.",
-                provenance: "Deterministic UI state machine rule, not an ML accuracy claim. Fields below 85% receive an amber review cue for human verification beside the receipt.",
+                    "Fields below the 85% confidence threshold receive an amber review cue. Owners can compare the receipt, correct any field, and verify the record before saving.",
+                provenance: "Design rule: below 85% triggers an amber review cue.",
             },
             {
                 metric: "Usability Research (n=8 Operators)",
                 detail:
                     "Testing with 8 property owners led us to replace complex calendar date pickers with prescoped tax year context chips. The beta reviews one receipt at a time; batch processing remains on the roadmap.",
-                provenance: "Validated across usability testing with 8 property operators and short-term rental hosts (Georgia Tech CREATE-X '26 cohort).",
+                provenance: "Validated through usability testing with 8 property operators and short-term rental hosts.",
             },
             {
                 metric: "Georgia Tech CREATE X",
@@ -173,7 +173,7 @@ const projectCatalog: Project[] = [
             {
                 metric: "1,110 Active Hunters vs. 18 Query Pageviews",
                 detail:
-                    "Used this behavioral baseline to bring threat hunting and query creation into one workspace. Active users and pageviews are different measures, not a conversion rate.",
+                    "A seven-day Mixpanel telemetry review showed 1,110 weekly active threat hunters and just 18 standalone query builder pageviews. That disparity helped inform our decision to bring query creation directly into the investigation workflow.",
                 provenance: "Source: 7 day Mixpanel behavioral baseline comparing weekly active hunters with query pageviews.",
             },
             {
@@ -217,7 +217,7 @@ const projectCatalog: Project[] = [
                 metric: "Global Consumer Scale",
                 detail:
                     "Validated through multivariate experimentation and Amazon design review before the global mobile rollout.",
-                provenance: "Source: Amazon design reviews, multivariate experiments, and global mobile rollout. Exact conversion lift is not published.",
+                provenance: "Source: Amazon design reviews, multivariate experiments, and global mobile rollout.",
             },
             {
                 metric: "Data Science Experimentation",
@@ -234,7 +234,7 @@ const projectCatalog: Project[] = [
         timeline: "Dec 2017 to Feb 2022",
         cardSummary:
             "Unified developer workflows, framework onboarding, and diagnostic tools for 500+ hardware and network engineers.",
-        summary: "Consolidated test workflows and surfaced diagnostic signals for 500+ engineers across five global teams.",
+        summary: "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
         accentColor: "#0055FF",
         logoUrl: "/logos/Cisco_logo.svg",
         projectUrl: "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",

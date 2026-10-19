@@ -14,6 +14,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "David Flynt | Product Designer & Design Engineer",
+  icons: {
+    icon: {
+      url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👀</text></svg>'),
+      type: "image/svg+xml",
+    },
+  },
   description:
     "Portfolio of David Flynt. 8+ years shipping 0 to 1 products and enterprise platforms at PaperTrail, Stellar Cyber, Amazon, and Cisco. Turning complex AI and data systems into interfaces people trust.",
 };
