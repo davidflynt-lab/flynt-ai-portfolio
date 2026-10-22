@@ -60,7 +60,6 @@ const ProjectModalContent = ({
     const [activeIndex, setActiveIndex] = useState(() =>
         Math.min(Math.max(initialActiveThumbnail, 0), gallery.length - 1)
     );
-    const [isPlaying, setIsPlaying] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [hasScrolled, setHasScrolled] = useState(false);
 
@@ -72,6 +71,7 @@ const ProjectModalContent = ({
     const maximizeButtonRef = useRef<HTMLButtonElement>(null);
 
     const currentMedia = gallery[activeIndex];
+    const stageBackground = currentMedia.url === project.previewVideo ? project.stageBackground : undefined;
     const isVideo = currentMedia.type === "video";
     const hasSwitcher = gallery.length > 1;
     const counter = `${String(activeIndex + 1).padStart(2, "0")} / ${String(gallery.length).padStart(2, "0")}`;
@@ -110,7 +110,6 @@ const ProjectModalContent = ({
     const selectMedia = (index: number) => {
         if (index === activeIndex) return;
         loopCountRef.current = 0;
-        setIsPlaying(true);
         setActiveIndex(index);
     };
 
@@ -209,8 +208,9 @@ const ProjectModalContent = ({
                         </header>
 
                         <figure className="border-y border-foreground/10">
+                            <div style={{ background: stageBackground }}>
                             <div className="relative mx-auto aspect-video w-full bg-background"
-                                style={{ maxWidth: `min(100%, calc(52dvh * 16 / 9)${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
+                                style={{ background: stageBackground, maxWidth: `min(100%, calc(52dvh * 16 / 9)${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
                                         initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
@@ -224,7 +224,7 @@ const ProjectModalContent = ({
                                                         event.preventDefault(); toggleMainVideo();
                                                     }
                                                 }}
-                                                onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={handleVideoEnded}
+                                                onEnded={handleVideoEnded}
                                                 tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
                                         ) : currentMedia.nativeWidth ? (
                                             <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)}
@@ -233,15 +233,10 @@ const ProjectModalContent = ({
                                         ) : (
                                             <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="(min-width: 1280px) 960px, 94vw" loading="eager" className="object-contain" />
                                         )}
-                                        {isVideo && !isPlaying && (
-                                            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                                                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-elevation">
-                                                    <Play className="ml-0.5 h-5 w-5 fill-current" />
-                                                </span>
-                                            </span>
-                                        )}
+
                                     </motion.div>
                                 </AnimatePresence>
+                            </div>
                             </div>
                             <figcaption className="flex flex-col gap-3 border-t border-foreground/10 px-5 py-4 md:flex-row md:items-center md:gap-5 md:px-8">
                                 {hasSwitcher && (
@@ -295,7 +290,9 @@ const ProjectModalContent = ({
                                                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: accentColor }} aria-hidden="true" />
                                                 {item.metric}
                                             </span>
-                                            <span className="font-mono text-[11px] leading-relaxed text-muted-foreground">{item.provenance}</span>
+                                            {item.provenance && (
+                                                <span className="font-mono text-[11px] leading-relaxed text-muted-foreground">{item.provenance}</span>
+                                            )}
                                             <span className="text-[15px] leading-relaxed text-muted-foreground">{item.detail}</span>
                                         </li>
                                     ))}
@@ -313,9 +310,23 @@ const ProjectModalContent = ({
                         <button type="button" onClick={closeLightbox}
                             className="absolute right-6 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                             aria-label="Exit fullscreen" autoFocus><X className="h-5 w-5" /></button>
-                        <div className="relative min-h-0 flex-1 flex items-center justify-center">
+                        <div className="relative min-h-0 flex-1 flex items-center justify-center" style={{ background: stageBackground }}>
                             {isVideo ? (
-                                <video className="h-full w-full object-contain" src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} loop={!reducedMotion} muted playsInline controls />
+                                <video className="h-full w-full cursor-pointer object-contain" src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} loop={!reducedMotion} muted playsInline
+                                    onClick={(event) => {
+                                        const video = event.currentTarget;
+                                        if (video.paused) video.play().catch(() => {});
+                                        else video.pause();
+                                    }}
+                                    onKeyDown={(event) => {
+                                        if (event.key === "Enter" || event.key === " ") {
+                                            event.preventDefault();
+                                            const video = event.currentTarget;
+                                            if (video.paused) video.play().catch(() => {});
+                                            else video.pause();
+                                        }
+                                    }}
+                                    tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
                             ) : currentMedia.nativeWidth ? (
                                 <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)} sizes="100vw"
                                     className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />

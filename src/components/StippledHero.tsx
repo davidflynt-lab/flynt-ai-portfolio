@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { useReducedMotion } from "framer-motion";
 
 type FieldControls = { setMotion: (enabled: boolean) => void; destroy: () => void };
@@ -283,9 +283,8 @@ export default function StippledHero({ sectionRef, suspended, showBanner }: { se
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fieldRef = useRef<FieldControls | undefined>(undefined);
     const motionRef = useRef(false);
-    const [paused, setPaused] = useState(false);
     const reducedMotion = useReducedMotion();
-    const canAnimate = !paused && reducedMotion === false && !suspended;
+    const canAnimate = reducedMotion === false && !suspended;
 
     useEffect(() => {
         motionRef.current = canAnimate;
@@ -314,15 +313,7 @@ export default function StippledHero({ sectionRef, suspended, showBanner }: { se
                     8+ years shipping 0→1 products and enterprise platforms at <strong className="font-semibold text-foreground">PaperTrail</strong> (Georgia Tech CREATE-X), <strong className="font-semibold text-foreground">Stellar Cyber</strong>, <strong className="font-semibold text-foreground">Amazon</strong>, and <strong className="font-semibold text-foreground">Cisco</strong>.
                 </p>
             </div>
-            {showBanner && <div className="absolute inset-x-0 bottom-8 z-10">
-                <div className="mx-auto flex max-w-7xl justify-end px-6">
-                    <button type="button" onClick={() => setPaused(!paused)} disabled={reducedMotion === true}
-                        aria-pressed={paused} aria-label={paused ? "Resume ambient animation" : "Pause ambient animation"}
-                        className="hidden min-h-11 items-center rounded-full px-3 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 disabled:cursor-default group-data-[renderer=webgl]:inline-flex">
-                        {reducedMotion ? "Motion reduced" : paused ? "Resume motion" : "Pause motion"}
-                    </button>
-                </div>
-            </div>}
+
         </section>
     );
 }

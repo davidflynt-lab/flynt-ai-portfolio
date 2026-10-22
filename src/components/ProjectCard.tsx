@@ -50,6 +50,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                 {/* Uncropped media uses the framing already present in the source asset. */}
                 <div
                     className="relative aspect-video overflow-hidden bg-background"
+                    style={{ background: project.stageBackground }}
                 >
                     <div className="absolute inset-0">
                         <Image

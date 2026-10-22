@@ -18,7 +18,7 @@ export interface ImpactItem {
     /** Lead metric, e.g. "2,800 WAU". */
     metric: string;
     detail: string;
-    provenance: string;
+    provenance?: string;
 }
 
 export interface Project {
@@ -38,6 +38,8 @@ export interface Project {
     thumbnail: string;
     /** Optional video that autoplays on card hover. */
     previewVideo?: string;
+    /** Background bleed for the hero poster and video media stages. */
+    stageBackground?: string;
     gallery: GalleryItem[];
     challenge: string;
     architecture: string;
@@ -62,6 +64,7 @@ const projectCatalog: Project[] = [
         projectUrl: "https://papertrail.finance",
         thumbnail: "/projects/papertrail/pt-hero-thumb.png",
         previewVideo: "/projects/papertrail/pt-hero.mp4",
+        stageBackground: "linear-gradient(180deg, #35BFA3 0%, #2DB79A 50%, #23AE92 100%)",
         gallery: [
             {
                 url: "/projects/papertrail/pt-hero.mp4",
@@ -100,8 +103,7 @@ const projectCatalog: Project[] = [
             {
                 metric: "85% Confidence Design Threshold",
                 detail:
-                    "Fields below the 85% confidence threshold receive an amber review cue. Owners can compare the receipt, correct any field, and verify the record before saving.",
-                provenance: "Design rule: below 85% triggers an amber review cue.",
+                    "Fields below the 85% confidence threshold trigger an amber review cue, allowing owners to compare the receipt side by side and verify records before saving.",
             },
             {
                 metric: "Usability Research (n=8 Operators)",
