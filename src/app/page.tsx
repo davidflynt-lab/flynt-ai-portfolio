@@ -147,7 +147,7 @@ const Index = () => {
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="hidden whitespace-nowrap text-sm text-muted-foreground lg:inline">
-                                Product Designer & Design Engineer
+                                Agentic Workflows, AI Systems & Dev Platforms
                             </span>
                             <span className="hidden text-sm text-muted-foreground/40 lg:inline" aria-hidden="true">
                                 |
@@ -214,7 +214,7 @@ const Index = () => {
                 <footer className="border-t border-zinc-200 dark:border-zinc-800">
                     <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:items-start lg:justify-between">
                         <div className="max-w-md">
-                            <p className="text-sm font-medium leading-relaxed">David Flynt — Product Designer &amp; Design Engineer · San Francisco Bay Area</p>
+                            <p className="text-sm font-medium leading-relaxed">David Flynt — Lead Product Designer &amp; Design Engineer · San Francisco Bay Area</p>
                             <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted-foreground">Architected in Next.js, TypeScript &amp; Tailwind CSS.</p>
                         </div>
                         <nav aria-label="Contact and links" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">

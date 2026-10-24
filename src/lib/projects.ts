@@ -12,6 +12,8 @@ export interface GalleryItem {
     poster?: string;
     /** Native source width caps enlargement of static artwork. */
     nativeWidth?: number;
+    /** Source aspect ratio preserves uncropped detail views. */
+    aspectRatio?: number;
 }
 
 export interface ImpactItem {
@@ -28,6 +30,7 @@ export interface Project {
     timeline: string;
     /** One sentence summary shown on the bento card. */
     cardSummary: string;
+    cardProof: string;
     /** Core decision shown before the project media. */
     summary: string;
     /** Brand accent for metric markers. */
@@ -50,231 +53,250 @@ export interface Project {
 export const getThumb = (item: GalleryItem): string | undefined =>
     item.thumb ?? item.poster ?? (item.type === "image" ? item.url : undefined);
 
-const projectCatalog: Project[] = [
+export const projects: Project[] = [
     {
-        id: "papertrail",
-        title: "PaperTrail | AI Financial Observability Platform",
-        role: "Founding Lead Product Designer & Architect",
-        timeline: "July 2025 to Present (Georgia Tech CREATE X Accelerator)",
-        cardSummary:
-            "0 to 1 product strategy, calibrated trust mechanics, and production Next.js/TypeScript engineering for rental property owners.",
-        summary: "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
-        accentColor: "#00E599",
-        logoUrl: "/logos/Papertrail_logo.svg",
-        projectUrl: "https://papertrail.finance",
-        thumbnail: "/projects/papertrail/pt-hero-thumb.png",
-        previewVideo: "/projects/papertrail/pt-hero.mp4",
-        stageBackground: "linear-gradient(180deg, #35BFA3 0%, #2DB79A 50%, #23AE92 100%)",
-        gallery: [
+        "id": "papertrail",
+        "title": "PaperTrail | AI Expense Review for Property Owners",
+        "role": "Founding Lead Product Designer & Architect",
+        "timeline": "July 2025 to Present (Georgia Tech Create X)",
+        "cardSummary": "0 to 1 product strategy, threshold based review mechanics, and production React/Next.js/TypeScript engineering for property owners.",
+        "summary": "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
+        "accentColor": "#00E599",
+        "logoUrl": "/logos/Papertrail_logo.svg",
+        "projectUrl": "https://papertrail.finance",
+        "thumbnail": "/projects/papertrail/pt-hero-thumb.png",
+        "previewVideo": "/projects/papertrail/pt-hero.mp4",
+        "stageBackground": "linear-gradient(180deg, #35BFA3 0%, #2DB79A 50%, #23AE92 100%)",
+        "gallery": [
             {
-                url: "/projects/papertrail/pt-hero.mp4",
-                type: "video",
-                poster: "/projects/papertrail/pt-hero-thumb.png",
-                caption:
-                    "End to end mobile receipt capture with optimistic UI states built in Next.js and TypeScript.",
+                "url": "/projects/papertrail/pt-hero.mp4",
+                "type": "video",
+                "poster": "/projects/papertrail/pt-hero-thumb.png",
+                "caption": "End to end mobile receipt capture and review loop shipped in React, Next.js, and TypeScript."
             },
             {
-                url: "/projects/papertrail/pt-01.png",
-                type: "image",
-                thumb: "/projects/papertrail/pt-01-thumb.png",
-                caption:
-                    "Real time financial observability dashboard with tax readiness health indicators.",
+                "url": "/projects/papertrail/pt-01.png",
+                "type": "image",
+                "thumb": "/projects/papertrail/pt-01-thumb.png",
+                "caption": "Desktop expense dashboard with property summaries and tax readiness indicators."
             },
             {
-                url: "/projects/papertrail/pt-02.mp4",
-                type: "video",
-                thumb: "/projects/papertrail/pt-02-thumb.png",
-                caption:
-                    "Natural language expense filtering validated through usability research with 8 property operators.",
+                "url": "/projects/papertrail/pt-02.mp4",
+                "type": "video",
+                "thumb": "/projects/papertrail/pt-02-thumb.png",
+                "caption": "Expense filtering and tax year context chips informed by testing with 8 property operators."
             },
             {
-                url: "/projects/papertrail/pt-03.mp4",
-                type: "video",
-                thumb: "/projects/papertrail/pt-03-thumb.png",
-                caption:
-                    "85% confidence threshold UI flagging uncertain fields with amber exception cues for human verification.",
-            },
+                "url": "/projects/papertrail/pt-03.mp4",
+                "type": "video",
+                "thumb": "/projects/papertrail/pt-03-thumb.png",
+                "caption": "Receipt review: an amber cue directs attention to uncertain fields while every value remains editable."
+            }
         ],
-        challenge:
-            "Property owners need accurate expense records without checking every receipt from scratch. Model errors create uncertainty around property assignment and expense categorization. We considered source highlighting, but coordinate extraction added model cost, so we kept the receipt beside editable fields and focused attention on uncertainty.",
-        architecture:
-            "Rejected full background categorization in favor of owner verification. I built a receipt and form review loop where fields below the 85% confidence design threshold receive an amber cue. Owners can compare the source and edit every value before saving. Partnering with my data scientist cofounder, I shipped the production frontend in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code.",
-        impact: [
+        "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost and latency were too high for the early product. We kept the receipt beside editable fields instead.",
+        "architecture": "I led product strategy and responsive UX, shipping production UI directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. With my data scientist cofounder, I designed a review loop around an explicit 85% confidence design rule: fields below the threshold receive an amber cue for receipt comparison, correction, and owner verification before saving. Every field remains editable, including fields above the threshold.",
+        "impact": [
             {
-                metric: "85% Confidence Design Threshold",
-                detail:
-                    "Fields below the 85% confidence threshold trigger an amber review cue, allowing owners to compare the receipt side by side and verify records before saving.",
+                "metric": "85% Confidence Design Rule",
+                "detail": "Fields below the 85% confidence threshold receive an amber review cue. Owners can compare the receipt, correct any field, and verify the record before saving."
             },
             {
-                metric: "Usability Research (n=8 Operators)",
-                detail:
-                    "Testing with 8 property owners led us to replace complex calendar date pickers with prescoped tax year context chips. The beta reviews one receipt at a time; batch processing remains on the roadmap.",
-                provenance: "Validated through usability testing with 8 property operators and short-term rental hosts.",
+                "metric": "Usability Research (n=8 Operators)",
+                "detail": "Testing informed tax year context chips and a direction for batch review. The live beta reviews one receipt at a time; batch processing remains on the roadmap.",
+                "provenance": "Validated through usability testing with 8 property operators and short-term rental hosts."
             },
             {
-                metric: "Georgia Tech CREATE X",
-                detail:
-                    "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
-                provenance: "Source: Georgia Tech CREATE X accelerator participation and Demo Day launch.",
-            },
+                "metric": "Georgia Tech Create X",
+                "detail": "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
+                "provenance": "Source: Georgia Tech Create X accelerator participation and Demo Day launch."
+            }
         ],
+        "cardProof": "85% Confidence Rule · n=8 Operator Research · Georgia Tech Create X"
     },
     {
-        id: "stellar-cyber",
-        title: "Stellar Cyber | AI Investigation Notebook",
-        role: "Product Designer, AI & Security Lead",
-        timeline: "Jan 2023 to July 2025 (Series B to Series C growth)",
-        cardSummary:
-            "Unified fragmented security workflows and natural language query translation for 2,800 weekly active users.",
-        summary: "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
-        accentColor: "#FF5500",
-        logoUrl: "/logos/Stellar_logo.svg",
-        projectUrl: "https://stellarcyber.ai/ai-investigator-natural-language-threat-hunting/",
-        thumbnail: "/projects/stellar-cyber/ai-hero-thumb.png",
-        previewVideo: "/projects/stellar-cyber/ai-hero.mp4",
-        gallery: [
+        "id": "stellar-cyber",
+        "title": "Stellar Cyber | AI Investigation Notebook",
+        "role": "Product Designer, AI & Security Lead",
+        "timeline": "Jan 2023 to July 2025 (Series B to Series C growth)",
+        "cardSummary": "Interactive consensus prototyping and inspectable natural language query workflows on a platform serving 2,800 weekly active technical users.",
+        "summary": "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
+        "accentColor": "#FF5500",
+        "logoUrl": "/logos/Stellar_logo.svg",
+        "projectUrl": "https://stellarcyber.ai/ai-investigator-natural-language-threat-hunting/",
+        "thumbnail": "/projects/stellar-cyber/ai-hero-thumb.png",
+        "previewVideo": "/projects/stellar-cyber/ai-hero.mp4",
+        "gallery": [
             {
-                url: "/projects/stellar-cyber/ai-hero.mp4",
-                type: "video",
-                poster: "/projects/stellar-cyber/ai-hero-thumb.png",
-                caption:
-                    "Natural language threat hunting translating analyst intent into inspectable backend queries.",
+                "url": "/projects/stellar-cyber/ai-hero.mp4",
+                "type": "video",
+                "poster": "/projects/stellar-cyber/ai-hero-thumb.png",
+                "caption": "Natural language threat hunting translating analyst intent into inspectable backend queries."
             },
             {
-                url: "/projects/stellar-cyber/ai-01.png",
-                type: "image",
-                thumb: "/projects/stellar-cyber/ai-01-thumb.png",
-                caption:
-                    "Persistent AI Investigation Notebook unifying 1,110 weekly threat hunters into a single workspace.",
+                "url": "/projects/stellar-cyber/ai-01.png",
+                "type": "image",
+                "thumb": "/projects/stellar-cyber/ai-01-thumb.png",
+                "caption": "Persistent investigation notebook showing queries, results, and investigation context in one workspace."
             },
             {
-                url: "/projects/stellar-cyber/ai-02.mp4",
-                type: "video",
-                thumb: "/projects/stellar-cyber/ai-02-thumb.png",
-                caption:
-                    "Inspectable query translation with progressive CVE telemetry disclosure on hover.",
+                "url": "/projects/stellar-cyber/ai-02.mp4",
+                "type": "video",
+                "thumb": "/projects/stellar-cyber/ai-02-thumb.png",
+                "caption": "Inspectable query translation with progressive CVE details on demand."
             },
             {
-                url: "/projects/stellar-cyber/ai-03.png",
-                type: "image",
-                thumb: "/projects/stellar-cyber/ai-03-thumb.png",
-                caption:
-                    "Contextual time range scoping designed to prevent cold storage query timeouts.",
-            },
+                "url": "/projects/stellar-cyber/ai-03.png",
+                "type": "image",
+                "thumb": "/projects/stellar-cyber/ai-03-thumb.png",
+                "caption": "Time range scoping controls in Query Studio. Historical searches also informed the separate cold storage workflow."
+            }
         ],
-        challenge:
-            "Supporting 2,800 weekly active technical users on an enterprise Open XDR platform, behavioral telemetry revealed a massive workflow bottleneck: while 1,110 security analysts actively hunted threats every week, standalone query builder tools saw only 18 pageviews. Analysts had to write complex Elasticsearch syntax and move between disconnected tools. Large historical searches also needed clear progress states and asynchronous data recall.",
-        architecture:
-            "Rejected an opaque auto executing chat assistant because analysts need to verify queries during live investigations. I designed natural language inputs that compile into inspectable, editable Elasticsearch syntax cards. An interactive prototype aligned product and engineering around latency, model error recovery, and API feasibility. CVE disclosure specs and asynchronous cold storage flows extended that approach to deeper investigation.",
-        impact: [
+        "challenge": "The Open XDR platform served 2,800 weekly active technical users. A seven day Mixpanel review showed 1,110 active threat hunters but only 18 standalone query builder pageviews. Those are different measures of activity, but the disparity exposed a workflow question: why ask analysts to leave an investigation to build a query? Syntax complexity and disconnected tools informed our exploration.",
+        "architecture": "I used an interactive investigation notebook prototype to align product and engineering around analyst control, model latency, error recovery, and API feasibility. We favored a persistent workspace over opaque chat replies: natural language becomes inspectable, editable Elasticsearch query syntax, with results and follow up context kept together. Progressive CVE disclosure and asynchronous cold storage query states addressed deeper investigation needs.",
+        "impact": [
             {
-                metric: "2,800 WAU",
-                detail: "Scaled core platform UX across enterprise security teams from Series B to Series C.",
-                provenance: "Source: Mixpanel platform telemetry across the Series B to C rollout, 2023 to 2025.",
+                "metric": "2,800 WAU",
+                "detail": "Led AI and investigation UX on the core platform during Series B to Series C growth.",
+                "provenance": "Source: Mixpanel platform telemetry across the Series B to C rollout, 2023 to 2025."
             },
             {
-                metric: "1,110 Active Hunters vs. 18 Query Pageviews",
-                detail:
-                    "A seven-day Mixpanel telemetry review showed 1,110 weekly active threat hunters and just 18 standalone query builder pageviews. That disparity helped inform our decision to bring query creation directly into the investigation workflow.",
-                provenance: "Source: 7 day Mixpanel behavioral baseline comparing weekly active hunters with query pageviews.",
+                "metric": "1,110 Active Hunters vs. 18 Query Pageviews",
+                "detail": "A seven-day Mixpanel telemetry review showed 1,110 weekly active threat hunters and just 18 standalone query builder pageviews. That disparity helped inform our decision to bring query creation directly into the investigation workflow.",
+                "provenance": "Source: 7 day Mixpanel behavioral baseline comparing weekly active hunters with query pageviews."
             },
             {
-                metric: "$150K ARR Preserved",
-                detail:
-                    "Contributed to retaining an enterprise renewal by shipping asynchronous cold storage query recall workflows.",
-                provenance: "Source: enterprise renewal retained following the cold storage workflow release.",
-            },
+                "metric": "$150K ARR Preserved",
+                "detail": "Contributed to retaining an enterprise renewal by shipping asynchronous cold storage query recall workflows.",
+                "provenance": "Source: enterprise renewal retained following the cold storage workflow release."
+            }
         ],
+        "cardProof": "2,800 WAU · 1,110 vs. 18 Telemetry Insight · $150K ARR Preserved"
     },
     {
-        id: "amazon",
-        title: "Amazon Books | Series Customization & Mobile Growth",
-        role: "UX Designer (Contract)",
-        timeline: "July 2022 to Oct 2022",
-        cardSummary:
-            "High volume mobile edition swap and checkout flows shipped globally to millions of readers.",
-        summary: "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
-        accentColor: "#00C805",
-        logoUrl: "/logos/Amazon_logo.svg",
-        projectUrl: "https://www.amazon.com/b?ie=UTF8&node=13633915011",
-        thumbnail: "/images/amazon-hero.png",
-        gallery: [
+        "id": "amazon",
+        "title": "Amazon Books | Series Customization & Mobile Growth",
+        "role": "UX Designer (Contract)",
+        "timeline": "July 2022 to Oct 2022",
+        "cardSummary": "Product detail page bulk purchase and inline edition swap flows shipped globally on Amazon Mobile.",
+        "summary": "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
+        "accentColor": "#00C805",
+        "logoUrl": "/logos/Amazon_logo.svg",
+        "projectUrl": "https://www.amazon.com/b?ie=UTF8&node=13633915011",
+        "thumbnail": "/projects/amazon/amazon-hero.png",
+        "gallery": [
             {
-                url: "/images/amazon-hero.png",
-                type: "image",
-                caption:
-                    "4 step progressive series customization flow shipped globally on Amazon Mobile.",
+                "url": "/projects/amazon/amazon-hero.png",
+                "type": "image",
+                "caption": "FIG 01 · Four step inline series customization flow on the Amazon Mobile Product Detail Page."
             },
-            // Pending assets (not yet in /public). Uncomment once the files are added:
-            // { url: "/projects/amazon/amzn-01.png", type: "image", caption: "Bottom sheet edition swap interaction handling dense format and publisher metadata." },
-            // { url: "/projects/amazon/amzn-02.png", type: "image", caption: "Localization analysis transitioning from regional manga layouts to global print bundles." },
-            // { url: "/projects/amazon/amzn-03.png", type: "image", caption: "System explorations for high velocity mobile bundle discovery." },
+            {
+                "url": "/projects/amazon/amzn-01.png",
+                "type": "image",
+                "aspectRatio": 1.003440366972477,
+                "caption": "FIG 02 · Detail crop: edition comparison bottom sheet and substitution confirmation with updated bundle pricing."
+            },
+            {
+                "url": "/projects/amazon/amzn-02.png",
+                "type": "image",
+                "aspectRatio": 1.02,
+                "caption": "FIG 03 · Source comparison: Japan manga selection baseline beside the US print edition exploration."
+            },
+            {
+                "url": "/projects/amazon/amzn-03.png",
+                "type": "image",
+                "aspectRatio": 2.1652173913043478,
+                "caption": "FIG 04 · Original research artifact: 20 unmoderated interviews and the Indiscriminate to Collector persona spectrum."
+            },
+            {
+                "url": "/projects/amazon/amzn-research-insights.png",
+                "type": "image",
+                "aspectRatio": 1.7186379928315412,
+                "caption": "FIG 05 · Original research findings: matching sets, price perception, and customer opposition to automatic substitutions."
+            },
+            {
+                "url": "/projects/amazon/amzn-iteration.png",
+                "type": "image",
+                "aspectRatio": 1.8568773234200744,
+                "caption": "FIG 06 · Original annotated exploration: inline swap, format comparison, and confirmation. Labeled future proposal in the source."
+            }
         ],
-        challenge:
-            "Millions of readers purchasing multi book series on Amazon Mobile encountered rigid bundle states. Book collectors who already owned specific editions or preferred matching formats (hardcover vs paperback vs media tie in) lacked a lightweight way to customize individual books inside the Buy the Series checkout flow without abandoning the funnel.",
-        architecture:
-            "Worked within Amazon Shopping component constraints and rejected sending users to separate product pages. I designed a 4 step inline edition swap: (1) Toggle on Customize editions, (2) Tap inline Swap triggers per book, (3) Select desired format and publisher edition in a clean bottom sheet, and (4) Confirm via immediate popover feedback (Book 1 substituted) with real time bundle price recalculation.",
-        impact: [
+        "challenge": "The Japan manga baseline emphasized selecting uniform volumes. Research with 20 readers showed why print editions needed more control: customers cared about matching covers and formats, availability, and price. The research identified Indiscriminate and Collector personas, with most participants leaning toward collecting. Customers did not want automatic substitutions when a volume was unavailable.",
+        "architecture": "I designed a four step inline customization flow on the mobile Product Detail Page: enable Customize editions, choose Swap on a volume, compare formats and publisher metadata in a bottom sheet, then confirm the substitution with immediate feedback and an updated bundle price. The gallery includes the original annotated exploration and research that informed explicit customer choice.",
+        "impact": [
             {
-                metric: "Global Consumer Scale",
-                detail:
-                    "Validated through multivariate experimentation and Amazon design review before the global mobile rollout.",
-                provenance: "Source: Amazon design reviews, multivariate experiments, and global mobile rollout.",
+                "metric": "Global Amazon Mobile Rollout",
+                "detail": "Validated through multivariate experimentation and Amazon design review before the global mobile rollout.",
+                "provenance": "Rollout confirmation: former project PM. Design flow and research: original project Figma documentation."
             },
             {
-                metric: "Data Science Experimentation",
-                detail:
-                    "Partnered with data science teams on multivariate A/B testing to evaluate discovery and purchase completion while meeting accessibility standards.",
-                provenance: "Source: collaboration with the data science team on discovery and purchase completion experiments.",
-            },
+                "metric": "20 Unmoderated Interviews",
+                "detail": "Research on matching editions, availability, and price informed customer controlled substitutions and richer format comparison.",
+                "provenance": "Source: original Bulk series purchasing research findings artifact, 2022."
+            }
         ],
+        "cardProof": "n=20 User Study · Shipped Globally on Amazon Mobile (iOS & Android)"
     },
     {
-        id: "cisco",
-        title: "Cisco | CAFY & CQE Developer Ecosystem",
-        role: "Product Designer, Mass Infrastructure Group",
-        timeline: "Dec 2017 to Feb 2022",
-        cardSummary:
-            "Unified developer workflows, framework onboarding, and diagnostic tools for 500+ hardware and network engineers.",
-        summary: "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
-        accentColor: "#0055FF",
-        logoUrl: "/logos/Cisco_logo.svg",
-        projectUrl: "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",
-        thumbnail: "/images/cisco-hero.png",
-        gallery: [
+        "id": "cisco",
+        "title": "Cisco | CAFY & CQE Infrastructure Observability",
+        "role": "Product Designer, Mass Infrastructure Group",
+        "timeline": "Dec 2017 to Feb 2022",
+        "cardSummary": "Test orchestration, Smart Debug diagnostics, and developer tooling for 500+ engineers.",
+        "summary": "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
+        "accentColor": "#0055FF",
+        "logoUrl": "/logos/Cisco_logo.svg",
+        "projectUrl": "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",
+        "thumbnail": "/projects/cisco/csc-ml-diagnosis.png",
+        "gallery": [
             {
-                url: "/images/cisco-hero.png",
-                type: "image",
-                nativeWidth: 1920,
-                caption:
-                    "FIG 01 · Internal CAFY Developer Portal: Self-serve onboarding microsite driving framework adoption across 5 global engineering orgs.",
+                "url": "/projects/cisco/csc-ml-diagnosis.png",
+                "type": "image",
+                "nativeWidth": 1139,
+                "aspectRatio": 1.7523076923076923,
+                "caption": "FIG 01 · CQE Run Monitor: model predictions for script issues, defect links, and failure summaries. Cisco Live 2020 demo, 44:15."
             },
-            // Pending assets (not yet in /public). Uncomment once the files are added:
-            // { url: "/projects/cisco/csc-01.mp4", type: "video", caption: "Smart Debug machine learning probability scores predicting software versus hardware root causes." },
-            // { url: "/projects/cisco/csc-02.png", type: "image", caption: "Synchronized syslog and execution log split view eliminating manual log scraping." },
-            // { url: "/projects/cisco/csc-03.png", type: "image", caption: "Visual topology workspace orchestrating 10,000+ automated hardware test cases." },
+            {
+                "url": "/projects/cisco/csc-smart-build.png",
+                "type": "image",
+                "nativeWidth": 1139,
+                "aspectRatio": 1.8550488599348534,
+                "caption": "FIG 02 · Smart Build configuration analysis: this example shows 24 packages, 500 test cases, 69.25% coverage, and estimated runtime. Cisco Live 2020 demo, 37:30."
+            },
+            {
+                "url": "/projects/cisco/csc-correlated-logs.png",
+                "type": "image",
+                "nativeWidth": 1139,
+                "aspectRatio": 1.7523076923076923,
+                "caption": "FIG 03 · Smart Debug: execution logs and device syslogs aligned by timestamp for comparison. Cisco Live 2020 demo, 41:35."
+            },
+            {
+                "url": "/projects/cisco/csc-scale-metrics.png",
+                "type": "image",
+                "nativeWidth": 1224,
+                "aspectRatio": 11.127272727272727,
+                "caption": "FIG 04 · Public CQE scale slide: 10,000+ test cases, 35+ packages, 6 platforms, 500+ daily test runs, and 500+ active engineers. Cisco Live 2020."
+            },
+            {
+                "url": "/images/cisco-hero.png",
+                "type": "image",
+                "nativeWidth": 1920,
+                "caption": "FIG 05 · Internal CAFY developer portal: onboarding microsite and visual explorations for framework adoption."
+            }
         ],
-        challenge:
-            "In Cisco's Mass Infrastructure Group, hardware and network engineers certifying enterprise routers across 10,000+ test cases had to context switch across a dozen fragmented internal tools. Diagnosing whether a test failure stemmed from a software bug or a hardware defect required manual log scraping, stretching router certification cycles to 6 months.",
-        architecture:
-            "Embedded within frontend engineering, I consolidated 5 CLI and web diagnostic tools into a unified CQE workflow. Smart Debug surfaced ML failure probability scores inline so engineers could triage likely root causes before reviewing raw logs. The portal shown here provided the entry point to that ecosystem.",
-        impact: [
+        "challenge": "Hardware and network engineers qualifying IOS XR routers had to switch between fragmented tools and manually compare execution logs with device syslogs. Across a test library of 10,000+ cases, determining whether failures came from scripts, software, or hardware slowed diagnosis and qualification.",
+        "architecture": "Embedded in engineering, I helped unify five internal CLI and web tools into the CAFY and CQE ecosystem. Smart Build mapped router configurations to relevant test packages. Smart Debug brought timestamp correlated logs, model root cause scores, and defect links into the investigation workflow. I also illustrated and animated the official CQE launch video, voiced by Gus Woythaler.",
+        "impact": [
             {
-                metric: "6 Months → 2 Weeks",
-                detail:
-                    "Contributed to reducing router OS certification cycles through unified workflow orchestration and test automation.",
-                provenance: "Source: router OS certification cycle across 10,000+ automated test cases.",
+                "metric": "6 Months → 2 Weeks",
+                "detail": "Contributed to reducing router qualification time through unified orchestration and test automation.",
+                "provenance": "Reported project outcome from internal work; the public demo illustrates the supporting workflows."
             },
             {
-                metric: "500+ Engineers Across 5 Global Teams",
-                detail:
-                    "Helped establish and govern an enterprise design system and reusable telemetry component library adopted across five global engineering organizations.",
-                provenance: "Scope: 500+ engineers across five global engineering teams.",
-            },
+                "metric": "500+ Active Engineers",
+                "detail": "Public CQE scale included 10,000+ test cases, 35+ automation packages, and 500+ daily active test runs across six IOS XR platforms.",
+                "provenance": "Source: Cisco DevNet, CQE at Cisco Live, 2020, scale slide at 9:50."
+            }
         ],
-    },
+        "cardProof": "500+ Active Engineers · 10,000+ Test Cases · 6 Mo → 2 Wk Qualification"
+    }
 ];
-
-/** Reverse chronological editorial order also drives the project grid and card preloads. */
-const projectOrder: ProjectId[] = ["papertrail", "stellar-cyber", "amazon", "cisco"];
-export const projects: Project[] = projectOrder.map((id) => projectCatalog.find((project) => project.id === id)!);

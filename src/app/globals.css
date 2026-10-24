@@ -117,3 +117,9 @@
   mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 65%, transparent 96%);
 }
 [data-renderer="webgl"] > .wave-fallback { opacity: 0; }
+
+/* Blend the baked 4:3 teal hero into its wider stage without cropping the phone. */
+[data-papertrail-hero] {
+  mask-image: linear-gradient(to right, transparent 12.5%, #000 25%, #000 75%, transparent 87.5%);
+  -webkit-mask-image: linear-gradient(to right, transparent 12.5%, #000 25%, #000 75%, transparent 87.5%);
+}

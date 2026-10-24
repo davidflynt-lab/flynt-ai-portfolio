@@ -209,14 +209,14 @@ const ProjectModalContent = ({
 
                         <figure className="border-y border-foreground/10">
                             <div style={{ background: stageBackground }}>
-                            <div className="relative mx-auto aspect-video w-full bg-background"
-                                style={{ background: stageBackground, maxWidth: `min(100%, calc(52dvh * 16 / 9)${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
+                            <div className="relative mx-auto w-full bg-background"
+                                style={{ background: stageBackground, aspectRatio: currentMedia.aspectRatio ?? 16 / 9, maxWidth: `min(100%, calc(52dvh * ${currentMedia.aspectRatio ?? 16 / 9})${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
                                         initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
                                         transition={{ duration: reducedMotion ? 0 : 0.12 }}>
                                         {isVideo ? (
-                                            <video ref={videoRef} className="h-full w-full cursor-pointer object-contain"
+                                            <video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className="h-full w-full cursor-pointer object-contain"
                                                 src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} muted playsInline preload="metadata"
                                                 onClick={toggleMainVideo}
                                                 onKeyDown={(event) => {
@@ -227,7 +227,7 @@ const ProjectModalContent = ({
                                                 onEnded={handleVideoEnded}
                                                 tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
                                         ) : currentMedia.nativeWidth ? (
-                                            <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)}
+                                            <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth / (currentMedia.aspectRatio ?? 16 / 9))}
                                                 sizes="(min-width: 1280px) 960px, 94vw" loading="eager"
                                                 className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />
                                         ) : (
@@ -240,7 +240,7 @@ const ProjectModalContent = ({
                             </div>
                             <figcaption className="flex flex-col gap-3 border-t border-foreground/10 px-5 py-4 md:flex-row md:items-center md:gap-5 md:px-8">
                                 {hasSwitcher && (
-                                    <div className="flex shrink-0 gap-2" role="group" aria-label="Project media">
+                                    <div className="flex max-w-full shrink-0 gap-2 overflow-x-auto pb-1" role="group" aria-label="Project media">
                                         {gallery.map((item, idx) => {
                                             const thumb = getThumb(item);
                                             const isActive = idx === activeIndex;
@@ -328,7 +328,7 @@ const ProjectModalContent = ({
                                     }}
                                     tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
                             ) : currentMedia.nativeWidth ? (
-                                <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth * 9 / 16)} sizes="100vw"
+                                <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth / (currentMedia.aspectRatio ?? 16 / 9))} sizes="100vw"
                                     className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />
                             ) : (
                                 <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="100vw" className="object-contain" />

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "David Flynt | Product Designer & Design Engineer",
+  title: "David Flynt | Lead Product Designer & Design Engineer",
   icons: {
     icon: {
       url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👀</text></svg>'),
