@@ -260,7 +260,7 @@ export const projects: Project[] = [
                 "type": "image",
                 "nativeWidth": 1139,
                 "aspectRatio": 1.8550488599348534,
-                "caption": "FIG 02 · Smart Build configuration analysis: this example shows 24 packages, 500 test cases, 69.25% coverage, and estimated runtime. Cisco Live 2020 demo, 37:30."
+                "caption": "FIG 02 · Smart Build configuration analysis: this example shows 24 packages, 500 test cases, 69.25% coverage, and estimated runtime. Configuration text redacted for publication. Cisco Live 2020 demo, 37:30."
             },
             {
                 "url": "/projects/cisco/csc-correlated-logs.png",
