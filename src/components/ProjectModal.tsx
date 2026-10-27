@@ -260,6 +260,13 @@ const ProjectModalContent = ({
                                     <p>{mediaCaption}</p>
                                 </div>
                             </figcaption>
+                            {currentMedia.annotations && (
+                                <div className="flex flex-wrap gap-2 px-5 pb-4 md:px-8" aria-label="Visual details">
+                                    {currentMedia.annotations.map((annotation) => (
+                                        <span key={annotation} className="rounded-full border border-foreground/15 px-3 py-1 font-mono text-[11px] text-foreground">{annotation}</span>
+                                    ))}
+                                </div>
+                            )}
                         </figure>
 
                         <motion.p

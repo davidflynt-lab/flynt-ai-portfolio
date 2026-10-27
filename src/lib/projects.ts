@@ -12,6 +12,8 @@ export interface GalleryItem {
     poster?: string;
     /** Native source width caps enlargement of static artwork. */
     nativeWidth?: number;
+    /** Concise labels for the visible details in an image. */
+    annotations?: string[];
     /** Source aspect ratio preserves uncropped detail views. */
     aspectRatio?: number;
 }
@@ -75,6 +77,14 @@ export const projects: Project[] = [
                 "caption": "End to end mobile receipt capture and review loop shipped in React, Next.js, and TypeScript."
             },
             {
+                "url": "/projects/papertrail/receipt-review-example.png",
+                "type": "image",
+                "nativeWidth": 2287,
+                "aspectRatio": 1.466,
+                "caption": "Matched Whole Foods receipt and editable review form. The date field shows a validation cue; the amber confidence cue appears in the separate review clip.",
+                "annotations": ["1. Date needs attention", "2. Compare the receipt", "3. Correct before saving"]
+            },
+            {
                 "url": "/projects/papertrail/pt-01.png",
                 "type": "image",
                 "thumb": "/projects/papertrail/pt-01-thumb.png",
@@ -93,7 +103,7 @@ export const projects: Project[] = [
                 "caption": "Receipt review: an amber cue directs attention to uncertain fields while every value remains editable."
             }
         ],
-        "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost and latency were too high for the early product. We kept the receipt beside editable fields instead.",
+        "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost was too high for the early product. We kept the receipt beside editable fields instead.",
         "architecture": "I led product strategy and responsive UX, shipping production UI directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. With my data scientist cofounder, I designed a review loop around an explicit 85% confidence design rule: fields below the threshold receive an amber cue for receipt comparison, correction, and owner verification before saving. Every field remains editable, including fields above the threshold.",
         "impact": [
             {
@@ -133,6 +143,14 @@ export const projects: Project[] = [
                 "caption": "Natural language threat hunting translating analyst intent into inspectable backend queries."
             },
             {
+                "url": "/projects/stellar-cyber/query-studio-detail.png",
+                "type": "image",
+                "nativeWidth": 1702,
+                "aspectRatio": 3.3438,
+                "caption": "Query Studio iteration: natural language prompt and generated Elasticsearch syntax. The editable query interaction is shown in the Investigator demo.",
+                "annotations": ["1. Natural language prompt", "2. Generated syntax for inspection"]
+            },
+            {
                 "url": "/projects/stellar-cyber/ai-01.png",
                 "type": "image",
                 "thumb": "/projects/stellar-cyber/ai-01-thumb.png",
@@ -151,23 +169,23 @@ export const projects: Project[] = [
                 "caption": "Time range scoping controls in Query Studio. Historical searches also informed the separate cold storage workflow."
             }
         ],
-        "challenge": "The Open XDR platform served 2,800 weekly active technical users. A seven day Mixpanel review showed 1,110 active threat hunters but only 18 standalone query builder pageviews. Those are different measures of activity, but the disparity exposed a workflow question: why ask analysts to leave an investigation to build a query? Syntax complexity and disconnected tools informed our exploration.",
-        "architecture": "I used an interactive investigation notebook prototype to align product and engineering around analyst control, model latency, error recovery, and API feasibility. We favored a persistent workspace over opaque chat replies: natural language becomes inspectable, editable Elasticsearch query syntax, with results and follow up context kept together. Progressive CVE disclosure and asynchronous cold storage query states addressed deeper investigation needs.",
+        "challenge": "Analysts needed to investigate across disconnected tools while translating questions into complex query syntax. A later June 2025 Mixpanel snapshot provides platform context: 1,110 weekly active threat hunters and 18 standalone query builder pageviews in the same week. These are different measures, and the snapshot followed the original prototype.",
+        "architecture": "Engineering raised concerns about model latency, translation accuracy, and backend limits. I built an interactive prototype in code and Figma showing inspectable, editable query syntax. It helped align product and engineering around persistent query blocks in the investigation workflow. We kept results and follow up context together, with progressive CVE disclosure for deeper investigation.",
         "impact": [
             {
                 "metric": "2,800 WAU",
                 "detail": "Led AI and investigation UX on the core platform during Series B to Series C growth.",
-                "provenance": "Source: Mixpanel platform telemetry across the Series B to C rollout, 2023 to 2025."
+                "provenance": "Source: Mixpanel platform telemetry, June 2 to June 8, 2025."
             },
             {
                 "metric": "1,110 Active Hunters vs. 18 Query Pageviews",
-                "detail": "A seven-day Mixpanel telemetry review showed 1,110 weekly active threat hunters and just 18 standalone query builder pageviews. That disparity helped inform our decision to bring query creation directly into the investigation workflow.",
-                "provenance": "Source: 7 day Mixpanel behavioral baseline comparing weekly active hunters with query pageviews."
+                "detail": "In June 2025, Mixpanel reported 1,110 weekly active threat hunters and 18 standalone query builder pageviews in the same week. This later platform snapshot provides context; it did not trigger the earlier prototype.",
+                "provenance": "Source: Mixpanel, June 2 to June 8, 2025. Weekly active users and pageviews are different measures."
             },
             {
                 "metric": "$150K ARR Preserved",
-                "detail": "Contributed to retaining an enterprise renewal by shipping asynchronous cold storage query recall workflows.",
-                "provenance": "Source: enterprise renewal retained following the cold storage workflow release."
+                "detail": "I designed time and cost estimates, progress states, and the background task tray for cold storage searches. Engineering delivered execution; Customer Engineering handled the escalation. The account renewed at $150K annually.",
+                "provenance": "Reported renewal following the cold storage escalation; design, engineering, and Customer Engineering contributions."
             }
         ],
         "cardProof": "2,800 WAU · 1,110 vs. 18 Telemetry Insight · $150K ARR Preserved"
@@ -205,7 +223,7 @@ export const projects: Project[] = [
                 "url": "/projects/amazon/amzn-03.png",
                 "type": "image",
                 "aspectRatio": 2.1652173913043478,
-                "caption": "FIG 04 · Original research artifact: 20 unmoderated interviews and the Indiscriminate to Collector persona spectrum."
+                "caption": "FIG 04 · Original research artifact: an unmoderated usability study with 20 participants and the Indiscriminate to Collector persona spectrum."
             },
             {
                 "url": "/projects/amazon/amzn-research-insights.png",
@@ -221,7 +239,7 @@ export const projects: Project[] = [
             }
         ],
         "challenge": "The Japan manga baseline emphasized selecting uniform volumes. Research with 20 readers showed why print editions needed more control: customers cared about matching covers and formats, availability, and price. The research identified Indiscriminate and Collector personas, with most participants leaning toward collecting. Customers did not want automatic substitutions when a volume was unavailable.",
-        "architecture": "I designed a four step inline customization flow on the mobile Product Detail Page: enable Customize editions, choose Swap on a volume, compare formats and publisher metadata in a bottom sheet, then confirm the substitution with immediate feedback and an updated bundle price. The gallery includes the original annotated exploration and research that informed explicit customer choice.",
+        "architecture": "I designed a four step inline customization flow on the mobile Product Detail Page: enable Customize editions, choose Swap on a volume, compare formats and publisher metadata in a bottom sheet, then confirm the substitution with immediate feedback and an updated bundle price. The four step Buy Next in Series flow shipped on Amazon Mobile; the gallery also labels a separate future concept exploration from the original documentation.",
         "impact": [
             {
                 "metric": "Global Amazon Mobile Rollout",
@@ -229,7 +247,7 @@ export const projects: Project[] = [
                 "provenance": "Rollout confirmation: former project PM. Design flow and research: original project Figma documentation."
             },
             {
-                "metric": "20 Unmoderated Interviews",
+                "metric": "20 Participant Usability Study",
                 "detail": "Research on matching editions, availability, and price informed customer controlled substitutions and richer format comparison.",
                 "provenance": "Source: original Bulk series purchasing research findings artifact, 2022."
             }
@@ -284,7 +302,7 @@ export const projects: Project[] = [
             }
         ],
         "challenge": "Hardware and network engineers qualifying IOS XR routers had to switch between fragmented tools and manually compare execution logs with device syslogs. Across a test library of 10,000+ cases, determining whether failures came from scripts, software, or hardware slowed diagnosis and qualification.",
-        "architecture": "Embedded in engineering, I helped unify five internal CLI and web tools into the CAFY and CQE ecosystem. Smart Build mapped router configurations to relevant test packages. Smart Debug brought timestamp correlated logs, model root cause scores, and defect links into the investigation workflow. I also illustrated and animated the official CQE launch video, voiced by Gus Woythaler.",
+        "architecture": "Embedded in engineering, I helped unify five internal CLI and web tools into the CAFY and CQE ecosystem. Smart Build mapped router configurations to relevant test packages. I partnered with infrastructure engineers on Smart Debug, bringing model root cause predictions, timestamp correlated logs, and defect links into the investigation workflow. I also illustrated and animated the official CQE launch video, voiced by Gus Woythaler.",
         "impact": [
             {
                 "metric": "6 Months → 2 Weeks",
