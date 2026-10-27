@@ -16,6 +16,10 @@ export interface GalleryItem {
     annotations?: string[];
     /** Source aspect ratio preserves uncropped detail views. */
     aspectRatio?: number;
+    /** Optional crop position for a focused view of an original image. */
+    imagePosition?: string;
+    /** Zoom within the media stage while retaining the unmodified source. */
+    imageScale?: number;
 }
 
 export interface ImpactItem {
@@ -85,6 +89,14 @@ export const projects: Project[] = [
                 "annotations": ["1. Date needs attention", "2. Compare the receipt", "3. Correct before saving"]
             },
             {
+                "url": "/projects/papertrail/pt-03.mp4",
+                "type": "video",
+                "thumb": "/projects/papertrail/pt-03-thumb.png",
+                "poster": "/projects/papertrail/pt-03-thumb.png",
+                "caption": "A separate review clip: an amber date cue draws attention to an uncertain field, and the owner selects a date.",
+                "annotations": ["1. Notice the amber cue", "2. Review the date", "3. Select a date"]
+            },
+            {
                 "url": "/projects/papertrail/pt-01.png",
                 "type": "image",
                 "thumb": "/projects/papertrail/pt-01-thumb.png",
@@ -95,12 +107,6 @@ export const projects: Project[] = [
                 "type": "video",
                 "thumb": "/projects/papertrail/pt-02-thumb.png",
                 "caption": "Expense filtering and tax year context chips informed by testing with 8 property operators."
-            },
-            {
-                "url": "/projects/papertrail/pt-03.mp4",
-                "type": "video",
-                "thumb": "/projects/papertrail/pt-03-thumb.png",
-                "caption": "Receipt review: an amber cue directs attention to uncertain fields while every value remains editable."
             }
         ],
         "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost was too high for the early product. We kept the receipt beside editable fields instead.",
@@ -149,6 +155,16 @@ export const projects: Project[] = [
                 "aspectRatio": 3.3438,
                 "caption": "Query Studio iteration: natural language prompt and generated Elasticsearch syntax. The editable query interaction is shown in the Investigator demo.",
                 "annotations": ["1. Natural language prompt", "2. Generated syntax for inspection"]
+            },
+            {
+                "url": "/projects/stellar-cyber/investigator-query-detail.png",
+                "type": "image",
+                "nativeWidth": 2246,
+                "aspectRatio": 3,
+                "imagePosition": "50% 0%",
+                "imageScale": 1.5,
+                "caption": "Later AI Investigator demo: the analyst's question, generated query, and inline edit control remain visible in the investigation.",
+                "annotations": ["1. Analyst question", "2. Generated query", "3. Inline edit control"]
             },
             {
                 "url": "/projects/stellar-cyber/ai-01.png",

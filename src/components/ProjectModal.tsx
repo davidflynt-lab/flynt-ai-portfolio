@@ -209,7 +209,7 @@ const ProjectModalContent = ({
 
                         <figure className="border-y border-foreground/10">
                             <div style={{ background: stageBackground }}>
-                            <div className="relative mx-auto w-full bg-background"
+                            <div className="relative mx-auto w-full overflow-hidden bg-background"
                                 style={{ background: stageBackground, aspectRatio: currentMedia.aspectRatio ?? 16 / 9, maxWidth: `min(100%, calc(52dvh * ${currentMedia.aspectRatio ?? 16 / 9})${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
@@ -226,6 +226,9 @@ const ProjectModalContent = ({
                                                 }}
                                                 onEnded={handleVideoEnded}
                                                 tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
+                                        ) : currentMedia.imagePosition ? (
+                                            <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="(min-width: 1280px) 1200px, 94vw" loading="eager"
+                                                className="object-cover" style={{ objectPosition: currentMedia.imagePosition, transform: `scale(${currentMedia.imageScale ?? 1})`, transformOrigin: "75% 0%" }} />
                                         ) : currentMedia.nativeWidth ? (
                                             <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth / (currentMedia.aspectRatio ?? 16 / 9))}
                                                 sizes="(min-width: 1280px) 960px, 94vw" loading="eager"
@@ -334,6 +337,8 @@ const ProjectModalContent = ({
                                         }
                                     }}
                                     tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
+                            ) : currentMedia.imagePosition ? (
+                                <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="100vw" className="object-contain" />
                             ) : currentMedia.nativeWidth ? (
                                 <Image src={currentMedia.url} alt={currentMedia.caption} width={currentMedia.nativeWidth} height={Math.round(currentMedia.nativeWidth / (currentMedia.aspectRatio ?? 16 / 9))} sizes="100vw"
                                     className="h-auto max-h-full w-full object-contain" style={{ maxWidth: currentMedia.nativeWidth }} />
