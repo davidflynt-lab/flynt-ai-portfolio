@@ -211,7 +211,7 @@ export const projects: Project[] = [
                 "provenance": "Reported renewal following the cold storage escalation; design, engineering, and Customer Engineering contributions."
             }
         ],
-        "cardProof": "2,800 WAU · 1,110 vs. 18 Telemetry Insight · $150K ARR Preserved"
+        "cardProof": "2,800 platform WAU · Inspectable AI queries · Cold-storage UX contributed to $150K renewal"
     },
     {
         "id": "amazon",
@@ -329,12 +329,12 @@ export const projects: Project[] = [
                 "caption": "FIG 05 · Internal CAFY developer portal: onboarding microsite and visual explorations for framework adoption."
             }
         ],
-        "challenge": "Hardware and network engineers qualifying IOS XR routers had to switch between fragmented tools and manually compare execution logs with device syslogs. Across a test library of 10,000+ cases, determining whether failures came from scripts, software, or hardware slowed diagnosis and qualification.",
-        "architecture": "Embedded in engineering, I helped unify five internal CLI and web tools into the CAFY and CQE ecosystem. Smart Build mapped router configurations to relevant test packages. I partnered with infrastructure engineers on Smart Debug, bringing model root cause predictions, timestamp correlated logs, and defect links into the investigation workflow. I also illustrated and animated the official CQE launch video, voiced by Gus Woythaler.",
+        "challenge": "The task: An infrastructure engineer investigates a failed router build across a library of 10,000+ automated test cases. The friction: Disconnected stack traces and CLI logs made it difficult to distinguish a test script bug, harness failure, or hardware regression.",
+        "architecture": "The decision: Partnering with infrastructure engineers, I designed Smart Debug to bring timestamp correlated execution and device logs together with model failure predictions and readable diagnostic summaries. The tradeoff: Surface failure patterns first, while keeping detailed CLI diagnostics available for deeper investigation. I also illustrated and animated the CQE launch video, voiced by Gus Woythaler.",
         "impact": [
             {
                 "metric": "6 Months → 2 Weeks",
-                "detail": "Contributed to reducing router qualification time through unified orchestration and test automation.",
+                "detail": "Reported team outcome: contributed to reducing router certification from six months to two weeks through unified orchestration and test automation for a platform supporting 500+ active engineers.",
                 "provenance": "Reported project outcome from internal work; the public demo illustrates the supporting workflows."
             },
             {

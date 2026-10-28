@@ -23,8 +23,9 @@ export default function ContactLinks({ includeEmail = true, placement = "above" 
                     <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}
                         aria-label={external ? `${label} (opens in a new tab)` : label}
                         aria-describedby={`${id}-${index}`}
-                        className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-muted-foreground transition-colors duration-150 hover:bg-foreground/10 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60">
+                        className={cn("flex h-11 items-center justify-center rounded-full bg-surface text-muted-foreground transition-colors duration-150 hover:bg-foreground/10 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60", href === RESUME_URL ? "gap-2 px-3" : "w-11")}>
                         <Icon className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+                        {href === RESUME_URL && <span className="text-xs font-medium">Resume</span>}
                     </a>
                     <span id={`${id}-${index}`} role="tooltip"
                         className={cn("pointer-events-none invisible absolute z-50 whitespace-nowrap rounded-md bg-foreground px-3 py-2 text-[11px] leading-none text-background opacity-0 shadow-elevation transition-[opacity,translate,visibility] duration-150 group-hover/contact:visible group-hover/contact:translate-y-0 group-hover/contact:opacity-100 group-focus-within/contact:visible group-focus-within/contact:translate-y-0 group-focus-within/contact:opacity-100 motion-reduce:transition-none",
