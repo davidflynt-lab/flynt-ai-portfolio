@@ -50,9 +50,9 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                 {/* Uncropped media uses the framing already present in the source asset. */}
                 <div
                     className="relative aspect-video overflow-hidden bg-background"
-                    style={{ background: project.stageBackground }}
+                    style={{ background: project.id === "cisco" ? "#0189ff" : project.stageBackground }}
                 >
-                    <div className="absolute inset-0">
+                    <div className={project.id === "cisco" ? "absolute inset-[6%] overflow-hidden rounded-md border border-white/15 shadow-[0_8px_28px_rgba(0,0,0,0.3)]" : "absolute inset-0"}>
                         <Image
                             src={thumbnail}
                             data-papertrail-hero={project.id === "papertrail" || undefined}

@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { X, Maximize2, ExternalLink, Play } from "lucide-react";
+import { X, Maximize2, ExternalLink, Play, ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Project, getThumb } from "@/lib/projects";
+import { Project, getThumb, projects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
 interface ProjectModalProps {
     project: Project | null;
     isOpen: boolean;
     onClose: () => void;
+    onNavigate: (project: Project) => void;
     initialActiveThumbnail?: number;
 }
 
@@ -49,10 +50,12 @@ const NARRATIVE_LABEL = "font-mono text-[11px] uppercase tracking-[0.14em] text-
 const ProjectModalContent = ({
     project,
     onClose,
+    onNavigate,
     initialActiveThumbnail = 0,
 }: {
     project: Project;
     onClose: () => void;
+    onNavigate: (project: Project) => void;
     initialActiveThumbnail?: number;
 }) => {
     const { gallery, accentColor } = project;
@@ -62,6 +65,8 @@ const ProjectModalContent = ({
     );
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [hasScrolled, setHasScrolled] = useState(false);
+    const [videoPaused, setVideoPaused] = useState(true);
+    const [lightboxVideoPaused, setLightboxVideoPaused] = useState(true);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const loopCountRef = useRef(0);
@@ -74,6 +79,9 @@ const ProjectModalContent = ({
     const stageBackground = currentMedia.url === project.previewVideo ? project.stageBackground : undefined;
     const isVideo = currentMedia.type === "video";
     const hasSwitcher = gallery.length > 1;
+    const projectIndex = projects.findIndex((item) => item.id === project.id);
+    const previousProject = projects[(projectIndex - 1 + projects.length) % projects.length];
+    const nextProject = projects[(projectIndex + 1) % projects.length];
     const counter = `${String(activeIndex + 1).padStart(2, "0")} / ${String(gallery.length).padStart(2, "0")}`;
 
     // Lock page scroll, move focus into the dialog, and restore both on close.
@@ -101,15 +109,21 @@ const ProjectModalContent = ({
                 }
             } else if (event.key === "Tab") {
                 trapFocus(isLightboxOpen ? lightboxRef.current : sheetRef.current, event);
+            } else if (!isLightboxOpen && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+                const target = event.target as HTMLElement | null;
+                if (target?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName ?? "")) return;
+                event.preventDefault();
+                onNavigate(event.key === "ArrowLeft" ? previousProject : nextProject);
             }
         };
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [isLightboxOpen, onClose]);
+    }, [isLightboxOpen, onClose, onNavigate, previousProject, nextProject]);
 
     const selectMedia = (index: number) => {
         if (index === activeIndex) return;
         loopCountRef.current = 0;
+        setVideoPaused(true);
         setActiveIndex(index);
     };
 
@@ -201,10 +215,16 @@ const ProjectModalContent = ({
                             <h2 id="project-modal-title" className="max-w-5xl text-2xl font-semibold leading-tight tracking-display text-foreground md:text-[32px]">
                                 {project.title}
                             </h2>
+                            <p className="max-w-5xl text-xs leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Role:</span> {project.scopeHeader.role} <span aria-hidden="true"> · </span><span className="font-semibold text-foreground">Scope:</span> {project.scopeHeader.scope} <span aria-hidden="true"> · </span><span className="font-semibold text-foreground">Shipped:</span> {project.scopeHeader.shipped}</p>
                             <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">
                                 {project.role} · {project.timeline}
                             </p>
                             <p className="max-w-4xl text-[15px] leading-relaxed text-foreground">{project.summary}</p>
+                            <p className="max-w-4xl text-[12px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Ownership &amp; partners:</span> {project.ownership}</p>
+                            <nav aria-label="Case study navigation" className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-foreground/10 pt-3">
+                                <button type="button" onClick={() => onNavigate(previousProject)} className="inline-flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Previous case <span className="sr-only">: {previousProject.title}</span></button>
+                                <button type="button" onClick={() => onNavigate(nextProject)} className="inline-flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4">Next case <span className="sr-only">: {nextProject.title}</span><ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></button>
+                            </nav>
                         </header>
 
                         <figure className="border-y border-foreground/10">
@@ -216,9 +236,10 @@ const ProjectModalContent = ({
                                         initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
                                         transition={{ duration: reducedMotion ? 0 : 0.12 }}>
                                         {isVideo ? (
-                                            <video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className="h-full w-full cursor-pointer object-contain"
-                                                src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} muted playsInline preload="metadata"
+                                            <><video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className="h-full w-full cursor-pointer object-contain"
+                                                src={currentMedia.url} poster={currentMedia.poster ?? currentMedia.thumb} autoPlay={!reducedMotion} muted playsInline preload="metadata"
                                                 onClick={toggleMainVideo}
+                                                onPlay={() => setVideoPaused(false)} onPause={() => setVideoPaused(true)}
                                                 onKeyDown={(event) => {
                                                     if (event.key === "Enter" || event.key === " ") {
                                                         event.preventDefault(); toggleMainVideo();
@@ -226,6 +247,7 @@ const ProjectModalContent = ({
                                                 }}
                                                 onEnded={handleVideoEnded}
                                                 tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
+                                                {videoPaused && <button type="button" onClick={toggleMainVideo} aria-label="Play video" className="absolute grid h-14 w-14 place-items-center rounded-full bg-black/75 text-white shadow-lg transition-colors hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"><Play className="ml-1 h-6 w-6 fill-current" aria-hidden="true" /></button>}</>
                                         ) : currentMedia.imagePosition ? (
                                             <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="(min-width: 1280px) 1200px, 94vw" loading="eager"
                                                 className="object-cover" style={{ objectPosition: currentMedia.imagePosition, transform: `scale(${currentMedia.imageScale ?? 1})`, transformOrigin: "75% 0%" }} />
@@ -322,7 +344,8 @@ const ProjectModalContent = ({
                             aria-label="Exit fullscreen" autoFocus><X className="h-5 w-5" /></button>
                         <div className="relative min-h-0 flex-1 flex items-center justify-center" style={{ background: stageBackground }}>
                             {isVideo ? (
-                                <video className="h-full w-full cursor-pointer object-contain" src={currentMedia.url} poster={currentMedia.poster} autoPlay={!reducedMotion} loop={!reducedMotion} muted playsInline
+                                <><video className="h-full w-full cursor-pointer object-contain" src={currentMedia.url} poster={currentMedia.poster ?? currentMedia.thumb} autoPlay={!reducedMotion} loop={!reducedMotion} muted playsInline
+                                    onPlay={() => setLightboxVideoPaused(false)} onPause={() => setLightboxVideoPaused(true)}
                                     onClick={(event) => {
                                         const video = event.currentTarget;
                                         if (video.paused) video.play().catch(() => {});
@@ -337,6 +360,7 @@ const ProjectModalContent = ({
                                         }
                                     }}
                                     tabIndex={0} aria-label={`${currentMedia.caption} Press to play or pause.`} />
+                                    {lightboxVideoPaused && <span aria-hidden="true" className="pointer-events-none absolute grid h-14 w-14 place-items-center rounded-full bg-black/75 text-white"><Play className="ml-1 h-6 w-6 fill-current" /></span>}</>
                             ) : currentMedia.imagePosition ? (
                                 <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="100vw" className="object-contain" />
                             ) : currentMedia.nativeWidth ? (
@@ -354,13 +378,14 @@ const ProjectModalContent = ({
     );
 };
 
-const ProjectModal = ({ project, isOpen, onClose, initialActiveThumbnail }: ProjectModalProps) => (
-    <AnimatePresence>
+const ProjectModal = ({ project, isOpen, onClose, onNavigate, initialActiveThumbnail }: ProjectModalProps) => (
+    <AnimatePresence mode="wait">
         {isOpen && project && (
             <ProjectModalContent
                 key={project.id}
                 project={project}
                 onClose={onClose}
+                onNavigate={onNavigate}
                 initialActiveThumbnail={initialActiveThumbnail}
             />
         )}

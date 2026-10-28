@@ -113,6 +113,13 @@ const Index = () => {
         window.dispatchEvent(new Event(PROJECT_CHANGE));
     }, []);
 
+    const navigateCase = useCallback((project: Project) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("project", project.id);
+        window.history.replaceState(window.history.state, "", url);
+        window.dispatchEvent(new Event(PROJECT_CHANGE));
+    }, []);
+
     const closeModal = useCallback(() => {
         if (window.history.state?.portfolioModal) {
             window.history.back();
@@ -206,7 +213,7 @@ const Index = () => {
                     </motion.section>
 
                     {/* ─── 2x2 Bento showcase ─── */}
-                    <section aria-label="Selected work" className="mx-auto max-w-7xl px-6 pb-28 pt-8">
+                    <section id="work" aria-label="Selected work" className="mx-auto max-w-7xl scroll-mt-36 px-6 pb-28 pt-8">
                         <ProjectGrid filterId={activeFilter === "all" ? null : activeFilter} onProjectSelect={openModal} />
                     </section>
                 </main>
@@ -225,7 +232,7 @@ const Index = () => {
                     </div>
                 </footer>
 
-                <ProjectModal project={selectedProject} isOpen={!!selectedProject} onClose={closeModal} />
+                <ProjectModal project={selectedProject} isOpen={!!selectedProject} onClose={closeModal} onNavigate={navigateCase} />
             </div>
         </MotionConfig>
     );

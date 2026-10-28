@@ -39,6 +39,9 @@ export interface Project {
     cardProof: string;
     /** Core decision shown before the project media. */
     summary: string;
+    /** Scannable contribution and collaborators for the case study header. */
+    ownership: string;
+    scopeHeader: { role: string; scope: string; shipped: string };
     /** Brand accent for metric markers. */
     accentColor: string;
     logoUrl: string;
@@ -67,6 +70,8 @@ export const projects: Project[] = [
         "timeline": "July 2025 to Present (Georgia Tech Create X)",
         "cardSummary": "0 to 1 product strategy, threshold based review mechanics, and production React/Next.js/TypeScript engineering for property owners.",
         "summary": "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
+        "ownership": "Product direction, interaction architecture, tax schemas, and frontend in Next.js, React, and Tailwind. Partner: Trinh Ngo, data science, extraction pipelines, and model evaluation.",
+        "scopeHeader": { "role": "Co-Founder & Design Engineer", "scope": "2-person team (Design + Data Science)", "shipped": "Working private beta" },
         "accentColor": "#00E599",
         "logoUrl": "/logos/Papertrail_logo.svg",
         "projectUrl": "https://papertrail.finance",
@@ -110,7 +115,7 @@ export const projects: Project[] = [
             }
         ],
         "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost was too high for the early product. We kept the receipt beside editable fields instead.",
-        "architecture": "I led product strategy and responsive UX, shipping production UI directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. With my data scientist cofounder, I designed a review loop around an explicit 85% confidence design rule: fields below the threshold receive an amber cue for receipt comparison, correction, and owner verification before saving. Every field remains editable, including fields above the threshold.",
+        "architecture": "I led product strategy and responsive UX, shipping production UI directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. With my data scientist cofounder, I designed a review loop around an explicit 85% confidence design rule: fields below the threshold receive an amber cue for receipt comparison, correction, and owner verification before saving. Every field remains editable, including fields above the threshold. We chose to validate this review flow one receipt at a time before exploring batch review.",
         "impact": [
             {
                 "metric": "85% Confidence Design Rule",
@@ -136,6 +141,8 @@ export const projects: Project[] = [
         "timeline": "Jan 2023 to July 2025 (Series B to Series C growth)",
         "cardSummary": "Interactive consensus prototyping and inspectable natural language query workflows on a platform serving 2,800 weekly active technical users.",
         "summary": "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
+        "ownership": "Product design and AI security interactions for Investigator and Query Studio. Partners: product management and backend engineering.",
+        "scopeHeader": { "role": "Product Designer, AI & Security Lead", "scope": "Embedded with Eng & CE", "shipped": "Enterprise production (~2,800 platform WAU)" },
         "accentColor": "#FF5500",
         "logoUrl": "/logos/Stellar_logo.svg",
         "projectUrl": "https://stellarcyber.ai/ai-investigator-natural-language-threat-hunting/",
@@ -213,6 +220,8 @@ export const projects: Project[] = [
         "timeline": "July 2022 to Oct 2022",
         "cardSummary": "Product detail page bulk purchase and inline edition swap flows shipped globally on Amazon Mobile.",
         "summary": "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
+        "ownership": "UX Designer (Contract), owning the Buy Next in Series widget and Edition Swap flow. Partner: Books Studio product manager.",
+        "scopeHeader": { "role": "UX Designer (Contract)", "scope": "Amazon Mobile Books team", "shipped": "Shipped 4-step flow on Amazon Mobile" },
         "accentColor": "#00C805",
         "logoUrl": "/logos/Amazon_logo.svg",
         "projectUrl": "https://www.amazon.com/b?ie=UTF8&node=13633915011",
@@ -227,7 +236,8 @@ export const projects: Project[] = [
                 "url": "/projects/amazon/amzn-01.png",
                 "type": "image",
                 "aspectRatio": 1.003440366972477,
-                "caption": "FIG 02 · Detail crop: edition comparison bottom sheet and substitution confirmation with updated bundle pricing."
+                "caption": "FIG 02 · Edition comparison and substitution confirmation. Research showed collectors wanted to choose substitutions themselves.",
+                "annotations": ["1. Compare available editions", "2. Choose a replacement", "3. Confirm the updated bundle"]
             },
             {
                 "url": "/projects/amazon/amzn-02.png",
@@ -277,6 +287,8 @@ export const projects: Project[] = [
         "timeline": "Dec 2017 to Feb 2022",
         "cardSummary": "Test orchestration, Smart Debug diagnostics, and developer tooling for 500+ engineers.",
         "summary": "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
+        "ownership": "Product design for systems and automation, embedded in frontend engineering and governing the design system across five testing tools.",
+        "scopeHeader": { "role": "Product Designer, Mass Infrastructure Group", "scope": "500+ Platform Engineers", "shipped": "Internal CQE production platform" },
         "accentColor": "#0055FF",
         "logoUrl": "/logos/Cisco_logo.svg",
         "projectUrl": "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",
