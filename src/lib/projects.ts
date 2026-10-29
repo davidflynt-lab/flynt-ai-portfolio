@@ -123,17 +123,22 @@ export const projects: Project[] = [
         "architecture": "I led product strategy and responsive UX, shipping production UI in React, Next.js, TypeScript, and Tailwind CSS. Confidence review rule: fields below 85% confidence receive an amber cue, while every field stays editable. We chose side by side receipt inspection after deferring source highlighting because of model cost, and started with single receipt review before exploring batch processing.",
         "impact": [
             {
-                "metric": "Working Private Beta · 8 Operators",
-                "detail": "Early usability testing with 8 property operators and short term rental hosts informed the single receipt review flow and a direction for batch review. Batch processing remains on the roadmap.",
-                "provenance": "Early participants included friends and family."
+                "metric": "Working Private Beta",
+                "detail": "Designed and built the frontend for a working private beta. The beta currently reviews one receipt at a time; batch processing remains the primary next roadmap milestone.",
+                "provenance": "Single-receipt review workflow."
             },
             {
-                "metric": "20+ Waitlist Signups",
-                "detail": "Collected in person at Georgia Tech Create X Demo Day.",
-                "provenance": "Waitlist signups, not active users."
+                "metric": "8 Property Operators",
+                "detail": "Early research with eight property operators and rental hosts revealed that operators rarely scan receipts at checkout: they collect and process them later. This informed the side-by-side verification workflow, pairing the source receipt directly beside editable extraction fields.",
+                "provenance": "Qualitative workflow research; early participants included friends and family."
+            },
+            {
+                "metric": "Georgia Tech CREATE-X",
+                "detail": "Presented PaperTrail at Georgia Tech CREATE-X Demo Day and collected 20+ waitlist signups in person.",
+                "provenance": "Summer Launch Cohort and Demo Day presentation."
             }
         ],
-        "cardProof": "85% Confidence Rule · n=8 Operator Research · Georgia Tech Create X"
+        "cardProof": "Working private beta · Research with 8 property operators · Georgia Tech CREATE-X"
     },
     {
         "id": "stellar-cyber",
