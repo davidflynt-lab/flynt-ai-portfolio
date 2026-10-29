@@ -44,7 +44,7 @@ const trapFocus = (container: HTMLElement | null, event: KeyboardEvent) => {
 const glassButton =
     "flex h-11 w-11 items-center justify-center rounded-full border border-foreground/10 bg-background text-foreground transition-colors duration-150 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60";
 
-const NARRATIVE_LABEL = "font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground";
+const NARRATIVE_LABEL = "text-base font-semibold leading-snug text-neutral-900 dark:text-white";
 
 // The shell stays mounted while cases change so focus and scroll lock remain stable.
 const ProjectModalContent = ({
@@ -213,8 +213,8 @@ const ProjectModalContent = ({
                     transition={reducedMotion ? { duration: 0 } : SHEET_SPRING}
                 >
                     <div className="z-30 grid shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 border-b border-foreground/10 bg-background px-3 py-2 dark:bg-surface sm:px-5">
-                        <span className="truncate font-mono text-[11px] tabular-nums text-muted-foreground" aria-label={`Case ${projectIndex + 1} of ${projects.length}`}>{String(projectIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                        <nav aria-label="Case study navigation" className="flex items-center rounded-full border border-neutral-800 bg-neutral-900 px-1 font-mono text-xs text-neutral-300">
+                        <span className="truncate font-mono text-sm tabular-nums text-neutral-700 dark:text-neutral-300" aria-label={`Case ${projectIndex + 1} of ${projects.length}`}>{String(projectIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                        <nav aria-label="Case study navigation" className="flex items-center rounded-full border border-neutral-800 bg-neutral-900 px-1 font-mono text-sm text-neutral-300">
                             <button type="button" onClick={() => onNavigate(previousProject)} aria-label={`Previous case: ${previousProject.title}`} className="inline-flex min-h-11 items-center gap-1 rounded-full px-2 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Prev</button>
                             <span className="text-neutral-600" aria-hidden="true">|</span>
                             <button type="button" onClick={() => onNavigate(nextProject)} aria-label={`Next case: ${nextProject.title}`} className="inline-flex min-h-11 items-center gap-1 rounded-full px-2 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white">Next <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></button>
@@ -245,11 +245,14 @@ const ProjectModalContent = ({
                             <h2 id="project-modal-title" className="max-w-5xl text-2xl font-semibold leading-tight tracking-display text-foreground md:text-[32px]">
                                 {project.title}
                             </h2>
-                            <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">
+                            <p className="font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
                                 {project.role} · {project.timeline}
                             </p>
-                            <p className="max-w-4xl text-[12px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Scope:</span> {project.ownership}</p>
-                            <p className="max-w-4xl text-[15px] leading-relaxed text-foreground">{project.summary}</p>
+                            <p className="max-w-4xl font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"><span className="font-semibold text-neutral-900 dark:text-white">Scope:</span> {project.ownership}</p>
+                            <div className="max-w-4xl space-y-2 text-[15px] leading-relaxed text-neutral-900 dark:text-white">
+                                <p><span className="font-semibold">The problem:</span> {project.problemSummary}</p>
+                                <p><span className="font-semibold">The decision:</span> {project.summary}</p>
+                            </div>
                         </header>
 
                         <figure className="border-y border-foreground/10">
@@ -305,7 +308,7 @@ const ProjectModalContent = ({
                                         })}
                                     </div>
                                 )}
-                                <div className="flex items-start gap-3 font-mono text-[11px] leading-relaxed text-muted-foreground" aria-live="polite" aria-atomic="true">
+                                <div className="flex items-start gap-3 font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-300" aria-live="polite" aria-atomic="true">
                                     <span className="shrink-0 tabular-nums">{counter}</span>
                                     <p>{mediaCaption}</p>
                                 </div>
@@ -313,13 +316,13 @@ const ProjectModalContent = ({
                             {currentMedia.annotations && (
                                 <div className="flex flex-wrap gap-2 px-5 pb-4 md:px-8" aria-label="Visual details">
                                     {currentMedia.annotations.map((annotation) => (
-                                        <span key={annotation} className="rounded-full border border-foreground/15 px-3 py-1 font-mono text-[11px] text-foreground">{annotation}</span>
+                                        <span key={annotation} className="rounded-full border border-foreground/15 px-3 py-1 font-mono text-sm text-foreground">{annotation}</span>
                                     ))}
                                 </div>
                             )}
-                            {project.id === "papertrail" && <div className="px-5 pb-4 md:px-8"><a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">Live Product <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a></div>}
-                            {project.id === "stellar-cyber" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(gallery.findIndex((item) => item.url.endsWith("query-management-exploration.png"))); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View query management exploration</button></div>}
-                            {project.id === "cisco" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(0); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View Run Monitor</button></div>}
+                            {project.id === "papertrail" && <div className="px-5 pb-4 md:px-8"><a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">Live Product <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a></div>}
+                            {project.id === "stellar-cyber" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(gallery.findIndex((item) => item.url.endsWith("query-management-exploration.png"))); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View query management exploration</button></div>}
+                            {project.id === "cisco" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(0); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View Run Monitor</button></div>}
                         </figure>
 
                         <motion.p
@@ -327,7 +330,7 @@ const ProjectModalContent = ({
                             animate={{ opacity: hasScrolled ? 0 : 0.5 }}
                             transition={{ duration: reducedMotion ? 0 : 0.18 }}
                             aria-hidden={hasScrolled}
-                            className="pointer-events-none px-5 pt-4 font-mono text-[11px] text-foreground md:px-8"
+                            className="pointer-events-none px-5 pt-4 font-mono text-sm text-foreground md:px-8"
                         >
                             Scroll for case study details ↓
                         </motion.p>
@@ -355,7 +358,7 @@ const ProjectModalContent = ({
                                                 {item.metric}
                                             </span>
                                             {item.provenance && (
-                                                <span className="font-mono text-[11px] leading-relaxed text-muted-foreground">{item.provenance}</span>
+                                                <span className="font-mono text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">{item.provenance}</span>
                                             )}
                                             <span className="text-[15px] leading-relaxed text-muted-foreground">{item.detail}</span>
                                         </li>
@@ -404,7 +407,7 @@ const ProjectModalContent = ({
                                 <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="100vw" className="object-contain" />
                             )}
                         </div>
-                        <p className="shrink-0 pt-4 text-center font-mono text-[11px] leading-relaxed text-white/80">{mediaCaption}</p>
+                        <p className="shrink-0 pt-4 text-center font-mono text-sm leading-relaxed text-neutral-300">{mediaCaption}</p>
                     </motion.div>
                 )}
             </AnimatePresence>

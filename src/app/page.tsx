@@ -176,7 +176,7 @@ const Index = () => {
                         transition={{ duration: 0.8, delay: 0.3, ease: ENTER_EASE }}
                     >
                         <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
-                            <span className="hidden shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground lg:inline">
+                            <span className="hidden shrink-0 font-mono text-sm uppercase tracking-[0.14em] text-neutral-700 dark:text-neutral-300 lg:inline">
                                 Selected work
                             </span>
                             <div className="no-scrollbar -mx-6 min-w-0 flex-1 overflow-x-auto px-6 lg:mx-0 lg:px-0">
@@ -222,7 +222,7 @@ const Index = () => {
                     <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:items-start lg:justify-between">
                         <div className="max-w-md">
                             <p className="text-sm font-medium leading-relaxed">David Flynt — Lead Product Designer &amp; Design Engineer · San Francisco Bay Area</p>
-                            <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted-foreground">Architected in Next.js, TypeScript &amp; Tailwind CSS.</p>
+                            <p className="mt-3 font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">Architected in Next.js, TypeScript &amp; Tailwind CSS.</p>
                         </div>
                         <nav aria-label="Contact and links" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                             <ContactLinks />

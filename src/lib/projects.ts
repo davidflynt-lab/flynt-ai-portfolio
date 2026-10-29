@@ -39,6 +39,7 @@ export interface Project {
     cardProof: string;
     /** Core decision shown before the project media. */
     summary: string;
+    problemSummary: string;
     /** Scannable contribution and collaborators for the case study header. */
     ownership: string;
     scopeHeader: { role: string; scope: string; shipped: string };
@@ -73,6 +74,7 @@ export const projects: Project[] = [
         "timeline": "July 2025 to Present (Georgia Tech Create X)",
         "cardSummary": "0 to 1 product strategy, threshold based review mechanics, and production React/Next.js/TypeScript engineering for property owners.",
         "summary": "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
+        "problemSummary": "Property owners need accurate expense records without manually auditing every AI extraction.",
         "ownership": "Co-Founder and Founding Lead Design Engineer. Owned product definition, design system, and Next.js/React/Tailwind frontend with one Data/AI Engineer.",
         "scopeHeader": { "role": "Founding Lead Product Designer and Design Engineer", "scope": "2-person team (Design + Data Science)", "shipped": "Working private beta" },
         "accentColor": "#00E599",
@@ -140,6 +142,7 @@ export const projects: Project[] = [
         "timeline": "Jan 2023 to July 2025 (Series B to Series C growth)",
         "cardSummary": "Interactive consensus prototyping and inspectable natural language query workflows on a platform serving 2,800 weekly active technical users.",
         "summary": "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
+        "problemSummary": "Analysts had to translate investigation questions into complex query syntax across disconnected tools.",
         "ownership": "Product Designer and AI Lead with cross-functional product and engineering teams. Investigation UX on a platform with 1,110 weekly active threat hunters and 2,800 platform WAU in June 2025.",
         "scopeHeader": { "role": "Product Designer, AI & Security Lead", "scope": "Embedded with Eng & CE", "shipped": "Enterprise production (~2,800 platform WAU)" },
         "accentColor": "#FF5500",
@@ -233,6 +236,7 @@ export const projects: Project[] = [
         "timeline": "July 2022 to Oct 2022",
         "cardSummary": "Product detail page bulk purchase and inline edition swap flows shipped globally on Amazon Mobile.",
         "summary": "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
+        "problemSummary": "Readers needed control over edition substitutions without leaving the series purchase flow.",
         "ownership": "UX Designer (Contract), Amazon Books Studio. Owned mobile bundling and edition swaps with product, research, and mobile engineering across a 44M+ SKU catalog.",
         "scopeHeader": { "role": "UX Designer (Contract)", "scope": "Amazon Mobile Books team", "shipped": "Shipped 4-step flow on Amazon Mobile" },
         "accentColor": "#00C805",
@@ -299,7 +303,8 @@ export const projects: Project[] = [
         "role": "Product Designer, Mass Infrastructure",
         "timeline": "Dec 2017 to Feb 2022",
         "cardSummary": "Test orchestration, Smart Debug diagnostics, and developer tooling for 500+ engineers.",
-        "summary": "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
+        "summary": "Unified test workflows and surfaced failure summaries with detailed diagnostics available on demand.",
+        "problemSummary": "Engineers had to piece together failures from disconnected router test tools and logs.",
         "ownership": "Product Designer, Mass Infrastructure Group. Owned observability tooling and design system governance with systems and test engineering for 500+ active engineers.",
         "scopeHeader": { "role": "Product Designer, Mass Infrastructure", "scope": "500+ Platform Engineers", "shipped": "Internal CQE production platform" },
         "accentColor": "#0055FF",

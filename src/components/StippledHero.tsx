@@ -305,14 +305,14 @@ export default function StippledHero({ sectionRef, suspended, showBanner }: { se
                 <div className="wave-fallback pointer-events-none absolute inset-0" aria-hidden="true" />
                 <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-0" aria-hidden="true" />
             </>}
-            <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-32 sm:pb-20 sm:pt-36 lg:pb-20 lg:pt-36">
+            <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-32 sm:pb-16 sm:pt-32 lg:pb-10 lg:pt-28">
                 <h1 id="hero-title" className="text-[64px] font-semibold leading-[.98] tracking-[-0.055em] sm:text-[96px] lg:text-[120px]">David Flynt</h1>
                 <h2 className="mt-6 max-w-4xl text-[27px] font-medium leading-tight tracking-[-0.035em] sm:text-[36px] lg:text-[42px]">Lead Product Designer &amp; Design Engineer</h2>
                 <p className="mt-3 max-w-[750px] text-[25px] leading-[1.25] tracking-[-0.025em] text-foreground sm:text-[32px] lg:text-[38px]">turning complex AI &amp; data systems into interfaces people trust.</p>
                 <p className="mt-7 max-w-2xl text-base leading-relaxed text-foreground/80 sm:text-[17px]">
                     8+ years shipping 0→1 products and enterprise platforms at <strong className="font-semibold text-foreground">PaperTrail</strong> (Georgia Tech Create X), <strong className="font-semibold text-foreground">Stellar Cyber</strong>, <strong className="font-semibold text-foreground">Amazon</strong>, and <strong className="font-semibold text-foreground">Cisco</strong>.
                 </p>
-                <a href="#work" className="mt-8 inline-flex min-h-11 items-center font-mono text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4">Selected work ↓</a>
+                <a href="#work" className="mt-8 inline-flex min-h-11 items-center font-mono text-sm text-neutral-700 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 dark:text-neutral-300">Selected work ↓</a>
             </div>
 
         </section>

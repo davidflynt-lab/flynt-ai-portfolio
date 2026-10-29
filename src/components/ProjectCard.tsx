@@ -80,7 +80,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                     </div>
                 </div>
 
-                {project.id === "cisco" && <p className="px-5 pt-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:px-6">Artifact · CQE Run Monitor</p>}
+                {project.id === "cisco" && <p className="px-5 pt-4 font-mono text-sm uppercase tracking-wider text-neutral-700 dark:text-neutral-300 sm:px-6">Artifact · CQE Run Monitor</p>}
 
                 {/* ─── Card body ─── */}
                 <div className="flex flex-1 flex-col gap-3 px-5 pb-5 pt-6 sm:px-6">
@@ -105,12 +105,12 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                         </button>
                     </h3>
 
-                    <p className="font-mono text-[12px] uppercase leading-relaxed tracking-wider text-muted-foreground">
+                    <p className="font-mono text-sm uppercase leading-relaxed tracking-wider text-neutral-700 dark:text-neutral-300">
                         {role} · {timeline}
                     </p>
 
                     <p className="text-[15px] leading-relaxed text-muted-foreground">{cardSummary}</p>
-                    <p className="mt-auto border-t border-foreground/10 pt-3 font-mono text-[11px] leading-relaxed text-foreground">{project.cardProof}</p>
+                    <p className="mt-auto border-t border-foreground/10 pt-3 font-mono text-[15px] leading-relaxed text-foreground">{project.cardProof}</p>
                 </div>
             </article>
         </motion.div>
