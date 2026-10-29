@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Maximize2, ExternalLink, Play, ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Project, getThumb, projects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
@@ -46,36 +46,51 @@ const glassButton =
 
 const NARRATIVE_LABEL = "font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground";
 
-// Inner component mounts fresh each time the modal opens, so state resets naturally.
+// The shell stays mounted while cases change so focus and scroll lock remain stable.
 const ProjectModalContent = ({
     project,
+    isOpen,
     onClose,
     onNavigate,
     initialActiveThumbnail = 0,
 }: {
     project: Project;
+    isOpen: boolean;
     onClose: () => void;
     onNavigate: (project: Project) => void;
     initialActiveThumbnail?: number;
 }) => {
     const { gallery, accentColor } = project;
     const reducedMotion = useReducedMotion();
-    const [activeIndex, setActiveIndex] = useState(() =>
-        Math.min(Math.max(initialActiveThumbnail, 0), gallery.length - 1)
-    );
+    const [selection, setSelection] = useState(() => ({
+        projectId: project.id,
+        index: Math.min(Math.max(initialActiveThumbnail, 0), gallery.length - 1),
+    }));
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-    const [hasScrolled, setHasScrolled] = useState(false);
-    const [videoPaused, setVideoPaused] = useState(true);
+    const [scrolledProject, setScrolledProject] = useState<string | null>(null);
+    const [videoState, setVideoState] = useState<{ url: string; paused: boolean } | null>(null);
     const [lightboxVideoPaused, setLightboxVideoPaused] = useState(true);
+    const [lastProjectId, setLastProjectId] = useState(project.id);
+
+    if (lastProjectId !== project.id) {
+        setLastProjectId(project.id);
+        setSelection({ projectId: project.id, index: 0 });
+        setScrolledProject(null);
+        setVideoState(null);
+    }
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const loopCountRef = useRef(0);
     const sheetRef = useRef<HTMLDivElement>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
     const lightboxRef = useRef<HTMLDivElement>(null);
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const maximizeButtonRef = useRef<HTMLButtonElement>(null);
 
+    const activeIndex = selection.projectId === project.id ? selection.index : 0;
     const currentMedia = gallery[activeIndex];
+    const hasScrolled = scrolledProject === project.id;
+    const videoPaused = videoState?.url === currentMedia.url ? videoState.paused : true;
     const stageBackground = currentMedia.url === project.previewVideo ? project.stageBackground : undefined;
     const isVideo = currentMedia.type === "video";
     const hasSwitcher = gallery.length > 1;
@@ -86,6 +101,7 @@ const ProjectModalContent = ({
 
     // Lock page scroll, move focus into the dialog, and restore both on close.
     useEffect(() => {
+        if (!isOpen) return;
         const previouslyFocused = document.activeElement as HTMLElement | null;
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = "hidden";
@@ -94,7 +110,12 @@ const ProjectModalContent = ({
             document.body.style.overflow = previousOverflow;
             previouslyFocused?.focus?.({ preventScroll: true });
         };
-    }, []);
+    }, [isOpen]);
+
+    useLayoutEffect(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+        loopCountRef.current = 0;
+    }, [project.id]);
 
     // Escape closes the lightbox first, then the sheet. Tab stays inside the top layer.
     useEffect(() => {
@@ -123,8 +144,8 @@ const ProjectModalContent = ({
     const selectMedia = (index: number) => {
         if (index < 0 || index >= gallery.length || index === activeIndex) return;
         loopCountRef.current = 0;
-        setVideoPaused(true);
-        setActiveIndex(index);
+        setVideoState({ url: gallery[index].url, paused: true });
+        setSelection({ projectId: project.id, index });
     };
 
     // Loop exactly MAX_LOOPS times, then pause on the final frame.
@@ -185,7 +206,7 @@ const ProjectModalContent = ({
                     aria-hidden={isLightboxOpen || undefined}
                     inert={isLightboxOpen}
                     aria-labelledby="project-modal-title"
-                    className="pointer-events-auto relative flex max-h-[92dvh] w-[94vw] max-w-7xl flex-col overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
+                    className="pointer-events-auto relative flex h-[92dvh] w-[94vw] max-w-7xl flex-col overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
                     initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: reducedMotion ? 0 : 24, scale: 1 }}
@@ -207,10 +228,12 @@ const ProjectModalContent = ({
                             </button>
                         </div>
                     </div>
-                    <div className="min-h-0 overflow-y-auto overscroll-contain pb-16"
+                    <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-16"
                         onScroll={(event) => {
-                            if (!hasScrolled && event.currentTarget.scrollTop > 0) setHasScrolled(true);
+                            if (!hasScrolled && event.currentTarget.scrollTop > 0) setScrolledProject(project.id);
                         }}>
+                        <AnimatePresence mode="wait" initial={false}>
+                        <motion.div key={project.id} initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }} transition={{ duration: reducedMotion ? 0 : 0.15 }}>
                         <header className="flex flex-col gap-3 px-5 pb-5 pt-5 md:px-8 md:pb-6 md:pt-6">
                             <div className="flex min-h-11 items-center">
                                 <a href={project.projectUrl} target="_blank" rel="noopener noreferrer"
@@ -232,7 +255,7 @@ const ProjectModalContent = ({
 
                         <figure className="border-y border-foreground/10">
                             <div style={{ background: stageBackground }}>
-                            <div className="relative mx-auto w-full overflow-hidden bg-background"
+                            <div className="relative mx-auto w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900/50"
                                 style={{ background: stageBackground, aspectRatio: currentMedia.aspectRatio ?? 16 / 9, maxWidth: `min(100%, calc(52dvh * ${currentMedia.aspectRatio ?? 16 / 9})${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
@@ -242,7 +265,7 @@ const ProjectModalContent = ({
                                             <><video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className="h-full w-full cursor-pointer object-contain"
                                                 src={currentMedia.url} poster={currentMedia.poster ?? currentMedia.thumb} autoPlay={!reducedMotion} muted playsInline preload="metadata"
                                                 onClick={toggleMainVideo}
-                                                onPlay={() => setVideoPaused(false)} onPause={() => setVideoPaused(true)}
+                                                onPlay={() => setVideoState({ url: currentMedia.url, paused: false })} onPause={() => setVideoState({ url: currentMedia.url, paused: true })}
                                                 onKeyDown={(event) => {
                                                     if (event.key === "Enter" || event.key === " ") {
                                                         event.preventDefault(); toggleMainVideo();
@@ -342,6 +365,8 @@ const ProjectModalContent = ({
                                 {project.relatedWork && <div className="border-t border-foreground/10 pt-4"><h4 className="text-[15px] font-semibold leading-snug text-foreground">{project.relatedWork.title}</h4><p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{project.relatedWork.detail}</p></div>}
                             </section>
                         </div>
+                        </motion.div>
+                        </AnimatePresence>
                     </div>
                 </motion.div>
             </div>
@@ -393,8 +418,8 @@ const ProjectModal = ({ project, isOpen, onClose, onNavigate, initialActiveThumb
     <AnimatePresence mode="wait">
         {isOpen && project && (
             <ProjectModalContent
-                key={project.id}
                 project={project}
+                isOpen={isOpen}
                 onClose={onClose}
                 onNavigate={onNavigate}
                 initialActiveThumbnail={initialActiveThumbnail}
