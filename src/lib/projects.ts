@@ -55,6 +55,8 @@ export interface Project {
     gallery: GalleryItem[];
     challenge: string;
     architecture: string;
+    workflow?: { title: string; detail: string }[];
+    relatedWork?: { title: string; detail: string };
     impact: ImpactItem[];
 }
 
@@ -115,21 +117,17 @@ export const projects: Project[] = [
             }
         ],
         "challenge": "Property owners managing paper receipts need to trust the record without trusting every model prediction. Incorrect extraction or categorization can create costly cleanup at tax time. We considered coordinate based source highlighting, but its added model cost was too high for the early product. We kept the receipt beside editable fields instead.",
-        "architecture": "I led product strategy and responsive UX, shipping production UI directly in React, Next.js, TypeScript, and Tailwind CSS using Cursor and Claude Code. With my data scientist cofounder, I designed a review loop around an explicit 85% confidence design rule: fields below the threshold receive an amber cue for receipt comparison, correction, and owner verification before saving. Every field remains editable, including fields above the threshold. We chose to validate this review flow one receipt at a time before exploring batch review.",
+        "architecture": "I led product strategy and responsive UX, shipping production UI in React, Next.js, TypeScript, and Tailwind CSS. Confidence review rule: fields below 85% confidence receive an amber cue, while every field stays editable. We chose side by side receipt inspection after deferring source highlighting because of model cost, and started with single receipt review before exploring batch processing.",
         "impact": [
             {
-                "metric": "85% Confidence Design Rule",
-                "detail": "Fields below the 85% confidence threshold receive an amber review cue. Owners can compare the receipt, correct any field, and verify the record before saving."
+                "metric": "Working Private Beta · 8 Operators",
+                "detail": "Early usability testing with 8 property operators and short term rental hosts informed the single receipt review flow and a direction for batch review. Batch processing remains on the roadmap.",
+                "provenance": "Early participants included friends and family."
             },
             {
-                "metric": "Usability Research (n=8 Operators)",
-                "detail": "Testing informed tax year context chips and a direction for batch review. The live beta reviews one receipt at a time; batch processing remains on the roadmap.",
-                "provenance": "Validated through usability testing with 8 property operators and short-term rental hosts."
-            },
-            {
-                "metric": "Georgia Tech Create X",
-                "detail": "Selected for Georgia Tech's startup accelerator program and launched live at Demo Day (papertrail.finance).",
-                "provenance": "Source: Georgia Tech Create X accelerator participation and Demo Day launch."
+                "metric": "20+ Waitlist Signups",
+                "detail": "Collected in person at Georgia Tech Create X Demo Day.",
+                "provenance": "Waitlist signups, not active users."
             }
         ],
         "cardProof": "85% Confidence Rule · n=8 Operator Research · Georgia Tech Create X"
@@ -194,6 +192,17 @@ export const projects: Project[] = [
         ],
         "challenge": "Analysts needed to investigate across disconnected tools while translating questions into complex query syntax. A later June 2025 Mixpanel snapshot provides platform context: 1,110 weekly active threat hunters and 18 standalone query builder pageviews in the same week. These are different measures, and the snapshot followed the original prototype.",
         "architecture": "Engineering raised concerns about model latency, translation accuracy, and backend limits. I built an interactive prototype in code and Figma showing inspectable, editable query syntax. It helped align product and engineering around persistent query blocks in the investigation workflow. We kept results and follow up context together, with progressive CVE disclosure for deeper investigation.",
+        "workflow": [
+            { "title": "Natural language prompt", "detail": "An analyst asks a question in plain English." },
+            { "title": "Generated syntax", "detail": "The system produces inspectable Elasticsearch or Lucene query syntax." },
+            { "title": "Inspect and refine", "detail": "The analyst can adjust the syntax or change date and field ranges before running the query." },
+            { "title": "Execute the query", "detail": "The query runs against platform telemetry with its logic visible to the analyst." },
+            { "title": "Explore results", "detail": "High severity alerts surface first, with raw log payloads available on demand." }
+        ],
+        "relatedWork": {
+            "title": "Related Work: Cold-Storage Telemetry Escalation",
+            "detail": "For a separate customer retention effort, I designed asynchronous query states, execution estimates, and progress indicators. Backend engineering delivered execution and Customer Engineering handled the escalation; together, the work contributed to preserving a $150K annual renewal."
+        },
         "impact": [
             {
                 "metric": "2,800 WAU",
@@ -204,11 +213,6 @@ export const projects: Project[] = [
                 "metric": "1,110 Active Hunters vs. 18 Query Pageviews",
                 "detail": "In June 2025, Mixpanel reported 1,110 weekly active threat hunters and 18 standalone query builder pageviews in the same week. This later platform snapshot provides context; it did not trigger the earlier prototype.",
                 "provenance": "Source: Mixpanel, June 2 to June 8, 2025. Weekly active users and pageviews are different measures."
-            },
-            {
-                "metric": "$150K ARR Preserved",
-                "detail": "I designed time and cost estimates, progress states, and the background task tray for cold storage searches. Engineering delivered execution; Customer Engineering handled the escalation. The account renewed at $150K annually.",
-                "provenance": "Reported renewal following the cold storage escalation; design, engineering, and Customer Engineering contributions."
             }
         ],
         "cardProof": "2,800 platform WAU · Inspectable AI queries · Cold-storage UX contributed to $150K renewal"

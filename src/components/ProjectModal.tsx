@@ -185,26 +185,34 @@ const ProjectModalContent = ({
                     aria-hidden={isLightboxOpen || undefined}
                     inert={isLightboxOpen}
                     aria-labelledby="project-modal-title"
-                    className="pointer-events-auto relative w-[94vw] max-w-7xl overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
+                    className="pointer-events-auto relative flex max-h-[92dvh] w-[94vw] max-w-7xl flex-col overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
                     initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: reducedMotion ? 0 : 24, scale: 1 }}
                     transition={reducedMotion ? { duration: 0 } : SHEET_SPRING}
                 >
-                    <div className="absolute right-4 top-4 z-30 flex gap-2">
-                        <button ref={maximizeButtonRef} type="button" onClick={openLightbox} className={glassButton} aria-label="View fullscreen">
-                            <Maximize2 className="h-4 w-4" />
-                        </button>
-                        <button ref={closeButtonRef} type="button" onClick={onClose} className={glassButton} aria-label="Close project">
-                            <X className="h-[18px] w-[18px]" />
-                        </button>
+                    <div className="z-30 grid shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 border-b border-foreground/10 bg-background px-3 py-2 dark:bg-surface sm:px-5">
+                        <span className="truncate font-mono text-[11px] tabular-nums text-muted-foreground" aria-label={`Case ${projectIndex + 1} of ${projects.length}`}>{String(projectIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                        <nav aria-label="Case study navigation" className="flex items-center rounded-full border border-neutral-800 bg-neutral-900 px-1 font-mono text-xs text-neutral-300">
+                            <button type="button" onClick={() => onNavigate(previousProject)} aria-label={`Previous case: ${previousProject.title}`} className="inline-flex min-h-11 items-center gap-1 rounded-full px-2 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Prev</button>
+                            <span className="text-neutral-600" aria-hidden="true">|</span>
+                            <button type="button" onClick={() => onNavigate(nextProject)} aria-label={`Next case: ${nextProject.title}`} className="inline-flex min-h-11 items-center gap-1 rounded-full px-2 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white">Next <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></button>
+                        </nav>
+                        <div className="flex justify-end gap-1">
+                            <button ref={maximizeButtonRef} type="button" onClick={openLightbox} className={glassButton} aria-label="View fullscreen">
+                                <Maximize2 className="h-4 w-4" />
+                            </button>
+                            <button ref={closeButtonRef} type="button" onClick={onClose} className={glassButton} aria-label="Close project">
+                                <X className="h-[18px] w-[18px]" />
+                            </button>
+                        </div>
                     </div>
-                    <div className="max-h-[92dvh] overflow-y-auto overscroll-contain pb-16"
+                    <div className="min-h-0 overflow-y-auto overscroll-contain pb-16"
                         onScroll={(event) => {
                             if (!hasScrolled && event.currentTarget.scrollTop > 0) setHasScrolled(true);
                         }}>
                         <header className="flex flex-col gap-3 px-5 pb-5 pt-5 md:px-8 md:pb-6 md:pt-6">
-                            <div className="flex min-h-11 items-center pr-24">
+                            <div className="flex min-h-11 items-center">
                                 <a href={project.projectUrl} target="_blank" rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60">
                                     <Image src={project.logoUrl} alt={`${project.title.split(" | ")[0]} logo`} width={120} height={32} unoptimized className="h-5 w-auto brightness-0 dark:invert" />
@@ -221,10 +229,6 @@ const ProjectModalContent = ({
                             </p>
                             <p className="max-w-4xl text-[15px] leading-relaxed text-foreground">{project.summary}</p>
                             <p className="max-w-4xl text-[12px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Ownership &amp; partners:</span> {project.ownership}</p>
-                            <nav aria-label="Case study navigation" className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-foreground/10 pt-3">
-                                <button type="button" onClick={() => onNavigate(previousProject)} className="inline-flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Previous case <span className="sr-only">: {previousProject.title}</span></button>
-                                <button type="button" onClick={() => onNavigate(nextProject)} className="inline-flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4">Next case <span className="sr-only">: {nextProject.title}</span><ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></button>
-                            </nav>
                         </header>
 
                         <figure className="border-y border-foreground/10">
@@ -312,6 +316,9 @@ const ProjectModalContent = ({
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-architecture">
                                 <h3 id="narrative-architecture" className={NARRATIVE_LABEL}>02 / Decisions & Tradeoffs</h3>
                                 <p className="text-[15px] leading-relaxed text-muted-foreground">{project.architecture}</p>
+                                {project.workflow && <ol className="flex flex-col gap-4" aria-label="Investigation workflow">
+                                    {project.workflow.map((step, index) => <li key={step.title} className="text-[15px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">{index + 1}. {step.title}.</span> {step.detail}</li>)}
+                                </ol>}
                             </section>
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-impact">
                                 <h3 id="narrative-impact" className={NARRATIVE_LABEL}>03 / Outcomes & Evidence</h3>
@@ -329,6 +336,7 @@ const ProjectModalContent = ({
                                         </li>
                                     ))}
                                 </ul>
+                                {project.relatedWork && <div className="border-t border-foreground/10 pt-4"><h4 className="text-[15px] font-semibold leading-snug text-foreground">{project.relatedWork.title}</h4><p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{project.relatedWork.detail}</p></div>}
                             </section>
                         </div>
                     </div>
