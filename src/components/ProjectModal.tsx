@@ -121,7 +121,7 @@ const ProjectModalContent = ({
     }, [isLightboxOpen, onClose, onNavigate, previousProject, nextProject]);
 
     const selectMedia = (index: number) => {
-        if (index === activeIndex) return;
+        if (index < 0 || index >= gallery.length || index === activeIndex) return;
         loopCountRef.current = 0;
         setVideoPaused(true);
         setActiveIndex(index);
@@ -223,12 +223,11 @@ const ProjectModalContent = ({
                             <h2 id="project-modal-title" className="max-w-5xl text-2xl font-semibold leading-tight tracking-display text-foreground md:text-[32px]">
                                 {project.title}
                             </h2>
-                            <p className="max-w-5xl text-xs leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Role:</span> {project.scopeHeader.role} <span aria-hidden="true"> · </span><span className="font-semibold text-foreground">Scope:</span> {project.scopeHeader.scope} <span aria-hidden="true"> · </span><span className="font-semibold text-foreground">Shipped:</span> {project.scopeHeader.shipped}</p>
                             <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">
                                 {project.role} · {project.timeline}
                             </p>
+                            <p className="max-w-4xl text-[12px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Scope:</span> {project.ownership}</p>
                             <p className="max-w-4xl text-[15px] leading-relaxed text-foreground">{project.summary}</p>
-                            <p className="max-w-4xl text-[12px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">Ownership &amp; partners:</span> {project.ownership}</p>
                         </header>
 
                         <figure className="border-y border-foreground/10">
@@ -296,6 +295,9 @@ const ProjectModalContent = ({
                                     ))}
                                 </div>
                             )}
+                            {project.id === "papertrail" && <div className="px-5 pb-4 md:px-8"><a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">Live Product <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a></div>}
+                            {project.id === "stellar-cyber" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(gallery.findIndex((item) => item.url.endsWith("query-management-exploration.png"))); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View query management exploration</button></div>}
+                            {project.id === "cisco" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(0); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-xs text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View Run Monitor</button></div>}
                         </figure>
 
                         <motion.p
@@ -316,6 +318,7 @@ const ProjectModalContent = ({
                             <section className="flex flex-col gap-4" aria-labelledby="narrative-architecture">
                                 <h3 id="narrative-architecture" className={NARRATIVE_LABEL}>02 / Decisions & Tradeoffs</h3>
                                 <p className="text-[15px] leading-relaxed text-muted-foreground">{project.architecture}</p>
+                                {project.decisionComparison && <dl className="space-y-3 text-[15px] leading-relaxed text-muted-foreground"><div><dt className="font-semibold text-foreground">Alternative and cost</dt><dd>{project.decisionComparison.alternative}</dd></div><div><dt className="font-semibold text-foreground">Choice</dt><dd>{project.decisionComparison.choice}</dd></div></dl>}
                                 {project.workflow && <ol className="flex flex-col gap-4" aria-label="Investigation workflow">
                                     {project.workflow.map((step, index) => <li key={step.title} className="text-[15px] leading-relaxed text-muted-foreground"><span className="font-semibold text-foreground">{index + 1}. {step.title}.</span> {step.detail}</li>)}
                                 </ol>}

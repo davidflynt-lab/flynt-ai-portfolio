@@ -57,6 +57,7 @@ export interface Project {
     architecture: string;
     workflow?: { title: string; detail: string }[];
     relatedWork?: { title: string; detail: string };
+    decisionComparison?: { alternative: string; choice: string };
     impact: ImpactItem[];
 }
 
@@ -68,12 +69,12 @@ export const projects: Project[] = [
     {
         "id": "papertrail",
         "title": "PaperTrail | AI Expense Review for Property Owners",
-        "role": "Founding Lead Product Designer & Architect",
+        "role": "Founding Lead Product Designer and Design Engineer",
         "timeline": "July 2025 to Present (Georgia Tech Create X)",
         "cardSummary": "0 to 1 product strategy, threshold based review mechanics, and production React/Next.js/TypeScript engineering for property owners.",
         "summary": "Built the production receipt review experience so owners can check uncertain extractions and correct every field before saving.",
-        "ownership": "Product direction, interaction architecture, tax schemas, and frontend in Next.js, React, and Tailwind. Partner: Trinh Ngo, data science, extraction pipelines, and model evaluation.",
-        "scopeHeader": { "role": "Co-Founder & Design Engineer", "scope": "2-person team (Design + Data Science)", "shipped": "Working private beta" },
+        "ownership": "Co-Founder and Founding Lead Design Engineer. Owned product definition, design system, and Next.js/React/Tailwind frontend with one Data/AI Engineer.",
+        "scopeHeader": { "role": "Founding Lead Product Designer and Design Engineer", "scope": "2-person team (Design + Data Science)", "shipped": "Working private beta" },
         "accentColor": "#00E599",
         "logoUrl": "/logos/Papertrail_logo.svg",
         "projectUrl": "https://papertrail.finance",
@@ -139,7 +140,7 @@ export const projects: Project[] = [
         "timeline": "Jan 2023 to July 2025 (Series B to Series C growth)",
         "cardSummary": "Interactive consensus prototyping and inspectable natural language query workflows on a platform serving 2,800 weekly active technical users.",
         "summary": "Turned analyst questions into inspectable, editable queries while keeping investigation context in one workspace.",
-        "ownership": "Product design and AI security interactions for Investigator and Query Studio. Partners: product management and backend engineering.",
+        "ownership": "Product Designer and AI Lead with cross-functional product and engineering teams. Investigation UX on a platform with 1,110 weekly active threat hunters and 2,800 platform WAU in June 2025.",
         "scopeHeader": { "role": "Product Designer, AI & Security Lead", "scope": "Embedded with Eng & CE", "shipped": "Enterprise production (~2,800 platform WAU)" },
         "accentColor": "#FF5500",
         "logoUrl": "/logos/Stellar_logo.svg",
@@ -188,10 +189,18 @@ export const projects: Project[] = [
                 "type": "image",
                 "thumb": "/projects/stellar-cyber/ai-03-thumb.png",
                 "caption": "Time range scoping controls in Query Studio. Historical searches also informed the separate cold storage workflow."
+            },
+            {
+                "url": "/projects/stellar-cyber/query-management-exploration.png",
+                "type": "image",
+                "nativeWidth": 3456,
+                "aspectRatio": 1.5484,
+                "caption": "Early query management exploration showing an AI query prompt, results, and saved query list."
             }
         ],
         "challenge": "Analysts needed to investigate across disconnected tools while translating questions into complex query syntax. A later June 2025 Mixpanel snapshot provides platform context: 1,110 weekly active threat hunters and 18 standalone query builder pageviews in the same week. These are different measures, and the snapshot followed the original prototype.",
         "architecture": "Engineering raised concerns about model latency, translation accuracy, and backend limits. I built an interactive prototype in code and Figma showing inspectable, editable query syntax. It helped align product and engineering around persistent query blocks in the investigation workflow. We kept results and follow up context together, with progressive CVE disclosure for deeper investigation.",
+        "decisionComparison": { "alternative": "Manual dropdowns and memorized Lucene or Elasticsearch syntax slowed query creation.", "choice": "Translate natural language into inspectable, editable query syntax so analysts can review it before execution." },
         "workflow": [
             { "title": "Natural language prompt", "detail": "An analyst asks a question in plain English." },
             { "title": "Generated syntax", "detail": "The system produces inspectable Elasticsearch or Lucene query syntax." },
@@ -224,7 +233,7 @@ export const projects: Project[] = [
         "timeline": "July 2022 to Oct 2022",
         "cardSummary": "Product detail page bulk purchase and inline edition swap flows shipped globally on Amazon Mobile.",
         "summary": "Kept edition swaps inside the series purchase flow, with immediate confirmation and updated bundle pricing.",
-        "ownership": "UX Designer (Contract), owning the Buy Next in Series widget and Edition Swap flow. Partner: Books Studio product manager.",
+        "ownership": "UX Designer (Contract), Amazon Books Studio. Owned mobile bundling and edition swaps with product, research, and mobile engineering across a 44M+ SKU catalog.",
         "scopeHeader": { "role": "UX Designer (Contract)", "scope": "Amazon Mobile Books team", "shipped": "Shipped 4-step flow on Amazon Mobile" },
         "accentColor": "#00C805",
         "logoUrl": "/logos/Amazon_logo.svg",
@@ -287,12 +296,12 @@ export const projects: Project[] = [
     {
         "id": "cisco",
         "title": "Cisco | CAFY & CQE Infrastructure Observability",
-        "role": "Product Designer, Mass Infrastructure Group",
+        "role": "Product Designer, Mass Infrastructure",
         "timeline": "Dec 2017 to Feb 2022",
         "cardSummary": "Test orchestration, Smart Debug diagnostics, and developer tooling for 500+ engineers.",
         "summary": "Unified five fragmented internal test tools into the CAFY and CQE developer ecosystem for 500+ engineers, contributing to a reduction in router certification time from six months to two weeks.",
-        "ownership": "Product design for systems and automation, embedded in frontend engineering and governing the design system across five testing tools.",
-        "scopeHeader": { "role": "Product Designer, Mass Infrastructure Group", "scope": "500+ Platform Engineers", "shipped": "Internal CQE production platform" },
+        "ownership": "Product Designer, Mass Infrastructure Group. Owned observability tooling and design system governance with systems and test engineering for 500+ active engineers.",
+        "scopeHeader": { "role": "Product Designer, Mass Infrastructure", "scope": "500+ Platform Engineers", "shipped": "Internal CQE production platform" },
         "accentColor": "#0055FF",
         "logoUrl": "/logos/Cisco_logo.svg",
         "projectUrl": "https://youtu.be/V1cqrAJ-KXE?si=vqGmNxrnwOwwA664",
@@ -335,6 +344,7 @@ export const projects: Project[] = [
         ],
         "challenge": "The task: An infrastructure engineer investigates a failed router build across a library of 10,000+ automated test cases. The friction: Disconnected stack traces and CLI logs made it difficult to distinguish a test script bug, harness failure, or hardware regression.",
         "architecture": "The decision: Partnering with infrastructure engineers, I designed Smart Debug to bring timestamp correlated execution and device logs together with model failure predictions and readable diagnostic summaries. The tradeoff: Surface failure patterns first, while keeping detailed CLI diagnostics available for deeper investigation. I also illustrated and animated the CQE launch video, voiced by Gus Woythaler.",
+        "decisionComparison": { "alternative": "Five disconnected CLI and web tools and fragmented log dumps made diagnosis harder across 10,000+ test cases.", "choice": "Unify telemetry and surface pass/fail summaries while keeping detailed CLI traces available for deeper investigation." },
         "impact": [
             {
                 "metric": "6 Months → 2 Weeks",
