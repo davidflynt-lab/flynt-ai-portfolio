@@ -232,8 +232,7 @@ const ProjectModalContent = ({
                         onScroll={(event) => {
                             if (!hasScrolled && event.currentTarget.scrollTop > 0) setScrolledProject(project.id);
                         }}>
-                        <AnimatePresence mode="wait" initial={false}>
-                        <motion.div key={project.id} initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }} transition={{ duration: reducedMotion ? 0 : 0.15 }}>
+                        <div>
                         <header className="flex flex-col gap-3 px-5 pb-5 pt-5 md:px-8 md:pb-6 md:pt-6">
                             <div className="flex min-h-11 items-center">
                                 <a href={project.projectUrl} target="_blank" rel="noopener noreferrer"
@@ -257,7 +256,7 @@ const ProjectModalContent = ({
                             <div style={{ background: stageBackground }}>
                             <div className="relative mx-auto w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900/50"
                                 style={{ background: stageBackground, aspectRatio: currentMedia.aspectRatio ?? 16 / 9, maxWidth: `min(100%, calc(52dvh * ${currentMedia.aspectRatio ?? 16 / 9})${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
-                                <AnimatePresence mode="wait" initial={false}>
+                                <AnimatePresence initial={false}>
                                     <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
                                         initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
                                         transition={{ duration: reducedMotion ? 0 : 0.12 }}>
@@ -365,8 +364,7 @@ const ProjectModalContent = ({
                                 {project.relatedWork && <div className="border-t border-foreground/10 pt-4"><h4 className="text-[15px] font-semibold leading-snug text-foreground">{project.relatedWork.title}</h4><p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{project.relatedWork.detail}</p></div>}
                             </section>
                         </div>
-                        </motion.div>
-                        </AnimatePresence>
+                        </div>
                     </div>
                 </motion.div>
             </div>
