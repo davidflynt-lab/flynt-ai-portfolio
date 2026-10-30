@@ -175,13 +175,10 @@ const Index = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.3, ease: ENTER_EASE }}
                     >
-                        <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
-                            <span className="hidden shrink-0 font-mono text-sm uppercase tracking-[0.14em] text-neutral-700 dark:text-neutral-300 lg:inline">
-                                Selected work
-                            </span>
-                            <div className="no-scrollbar -mx-6 min-w-0 flex-1 overflow-x-auto px-6 lg:mx-0 lg:px-0">
+                        <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-2 px-6 py-3">
+                            <div className="no-scrollbar min-w-0 max-w-full overflow-x-auto">
                                 <div
-                                    className="inline-flex gap-1 rounded-full bg-surface p-1.5"
+                                    className="mx-auto flex w-max gap-1 rounded-full bg-surface p-1.5"
                                 >
                                     {IMPACT_FILTERS.map((filter) => {
                                         const isLit = activeFilter === filter.key;

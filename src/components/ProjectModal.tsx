@@ -91,7 +91,12 @@ const ProjectModalContent = ({
     const currentMedia = gallery[activeIndex];
     const hasScrolled = scrolledProject === project.id;
     const videoPaused = videoState?.url === currentMedia.url ? videoState.paused : true;
-    const stageBackground = currentMedia.url === project.previewVideo ? project.stageBackground : undefined;
+    const stageBackground = {
+        papertrail: "linear-gradient(135deg, #00a08e, #00d6c5)",
+        "stellar-cyber": "#f28c29",
+        amazon: "#34c759",
+        cisco: "#0189ff",
+    }[project.id];
     const isVideo = currentMedia.type === "video";
     const hasSwitcher = gallery.length > 1;
     const projectIndex = projects.findIndex((item) => item.id === project.id);
@@ -190,7 +195,7 @@ const ProjectModalContent = ({
     return (
         <>
             <motion.div
-                className="fixed inset-0 z-50 bg-scrim backdrop-blur-sm"
+                className="fixed inset-0 z-50 bg-scrim backdrop-blur-sm transform-gpu [backface-visibility:hidden] [will-change:transform]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -198,7 +203,7 @@ const ProjectModalContent = ({
                 onClick={onClose}
                 aria-hidden="true"
             />
-            <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center">
+            <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center transform-gpu [backface-visibility:hidden] [will-change:transform]">
                 <motion.div
                     ref={sheetRef}
                     role="dialog"
@@ -206,7 +211,7 @@ const ProjectModalContent = ({
                     aria-hidden={isLightboxOpen || undefined}
                     inert={isLightboxOpen}
                     aria-labelledby="project-modal-title"
-                    className="pointer-events-auto relative flex h-[92dvh] w-[94vw] max-w-7xl flex-col overflow-hidden rounded-[24px] bg-background shadow-lifted dark:bg-surface"
+                    className="pointer-events-auto relative flex h-[92dvh] w-[94vw] max-w-7xl flex-col overflow-hidden rounded-[24px] bg-white shadow-lifted [contain:paint] dark:bg-[#0a0b0e]"
                     initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: reducedMotion ? 0 : 24, scale: 1 }}
@@ -256,15 +261,12 @@ const ProjectModalContent = ({
                         </header>
 
                         <figure className="border-y border-foreground/10">
-                            <div style={{ background: stageBackground }}>
-                            <div className="relative mx-auto w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900/50"
+                            <div className="bg-neutral-100 dark:bg-neutral-900/50" style={{ background: stageBackground }}>
+                            <div className="relative mx-auto w-full overflow-hidden rounded-2xl"
                                 style={{ background: stageBackground, aspectRatio: currentMedia.aspectRatio ?? 16 / 9, maxWidth: `min(100%, calc(52dvh * ${currentMedia.aspectRatio ?? 16 / 9})${currentMedia.nativeWidth ? `, ${currentMedia.nativeWidth}px` : ""})` }}>
-                                <AnimatePresence initial={false}>
-                                    <motion.div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center"
-                                        initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} exit={{ opacity: reducedMotion ? 1 : 0 }}
-                                        transition={{ duration: reducedMotion ? 0 : 0.12 }}>
+                                    <div key={currentMedia.url} className="absolute inset-0 flex items-center justify-center overflow-hidden">
                                         {isVideo ? (
-                                            <><video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className="h-full w-full cursor-pointer object-contain"
+                                            <><video ref={videoRef} data-papertrail-hero={project.id === "papertrail" && currentMedia.url === project.previewVideo || undefined} className={cn("h-full w-full cursor-pointer object-contain", project.id === "stellar-cyber" && currentMedia.url === project.previewVideo && "origin-left scale-105")}
                                                 src={currentMedia.url} poster={currentMedia.poster ?? currentMedia.thumb} autoPlay={!reducedMotion} muted playsInline preload="metadata"
                                                 onClick={toggleMainVideo}
                                                 onPlay={() => setVideoState({ url: currentMedia.url, paused: false })} onPause={() => setVideoState({ url: currentMedia.url, paused: true })}
@@ -287,8 +289,7 @@ const ProjectModalContent = ({
                                             <Image src={currentMedia.url} alt={currentMedia.caption} fill sizes="(min-width: 1280px) 960px, 94vw" loading="eager" className="object-contain" />
                                         )}
 
-                                    </motion.div>
-                                </AnimatePresence>
+                                    </div>
                             </div>
                             </div>
                             <figcaption className="flex flex-col gap-3 border-t border-foreground/10 px-5 py-4 md:flex-row md:items-center md:gap-5 md:px-8">
@@ -320,9 +321,6 @@ const ProjectModalContent = ({
                                     ))}
                                 </div>
                             )}
-                            {project.id === "papertrail" && <div className="px-5 pb-4 md:px-8"><a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">Live Product <ExternalLink className="h-3 w-3" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a></div>}
-                            {project.id === "stellar-cyber" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(gallery.findIndex((item) => item.url.endsWith("query-management-exploration.png"))); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View query management exploration</button></div>}
-                            {project.id === "cisco" && <div className="px-5 pb-4 md:px-8"><button type="button" onClick={() => { selectMedia(0); openLightbox(); }} className="min-h-11 rounded-full border border-foreground/15 px-3 font-mono text-sm text-foreground hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2">View Run Monitor</button></div>}
                         </figure>
 
                         <motion.p

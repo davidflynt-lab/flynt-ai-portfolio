@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { forwardRef, useEffect, useRef, useState } from "react";
@@ -60,13 +62,13 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
                             fill
                             sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 92vw"
                             preload={index < 2}
-                            className="object-contain"
+                            className={cn("object-contain", project.id === "stellar-cyber" && "origin-left scale-105")}
                         />
                         {previewVideo && (
                             <video
                                 ref={videoRef}
                                 data-papertrail-hero={project.id === "papertrail" || undefined}
-                                className="absolute inset-0 h-full w-full object-contain transition-opacity duration-[180ms] motion-reduce:transition-none"
+                                className={cn("absolute inset-0 h-full w-full object-contain transition-opacity duration-[180ms] motion-reduce:transition-none", project.id === "stellar-cyber" && "origin-left scale-105")}
                                 src={previewVideo}
                                 poster={thumbnail}
                                 loop
